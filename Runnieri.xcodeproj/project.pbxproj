@@ -14,35 +14,36 @@
 			remoteGlobalIDString = C68C934D2DE48A7D00D57FE3;
 			remoteInfo = Runnieri;
 		};
-		C68C93692DE48A7F00D57FE3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C68C93462DE48A7D00D57FE3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C68C934D2DE48A7D00D57FE3;
-			remoteInfo = Runnieri;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C636DAED2DE4C4DC000B2829 /* Runnieri.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Runnieri.xctestplan; sourceTree = "<group>"; };
 		C68C934E2DE48A7D00D57FE3 /* Runnieri.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runnieri.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C68C935E2DE48A7F00D57FE3 /* RunnieriTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnieriTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C68C93682DE48A7F00D57FE3 /* RunnieriUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnieriUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C68C93832DE4907900D57FE3 /* Exceptions for "Runnieri" folder in "Runnieri" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C68C934D2DE48A7D00D57FE3 /* Runnieri */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C68C93502DE48A7D00D57FE3 /* Runnieri */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C68C93832DE4907900D57FE3 /* Exceptions for "Runnieri" folder in "Runnieri" target */,
+			);
 			path = Runnieri;
 			sourceTree = "<group>";
 		};
 		C68C93612DE48A7F00D57FE3 /* RunnieriTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RunnieriTests;
-			sourceTree = "<group>";
-		};
-		C68C936B2DE48A7F00D57FE3 /* RunnieriUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RunnieriUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -62,22 +63,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C68C93652DE48A7F00D57FE3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		C68C93452DE48A7D00D57FE3 = {
 			isa = PBXGroup;
 			children = (
+				C636DAED2DE4C4DC000B2829 /* Runnieri.xctestplan */,
 				C68C93502DE48A7D00D57FE3 /* Runnieri */,
 				C68C93612DE48A7F00D57FE3 /* RunnieriTests */,
-				C68C936B2DE48A7F00D57FE3 /* RunnieriUITests */,
+				C68C93D22DE4BEE600D57FE3 /* Frameworks */,
 				C68C934F2DE48A7D00D57FE3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,9 +82,15 @@
 			children = (
 				C68C934E2DE48A7D00D57FE3 /* Runnieri.app */,
 				C68C935E2DE48A7F00D57FE3 /* RunnieriTests.xctest */,
-				C68C93682DE48A7F00D57FE3 /* RunnieriUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C68C93D22DE4BEE600D57FE3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,29 +141,6 @@
 			productReference = C68C935E2DE48A7F00D57FE3 /* RunnieriTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C68C93672DE48A7F00D57FE3 /* RunnieriUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C68C93782DE48A7F00D57FE3 /* Build configuration list for PBXNativeTarget "RunnieriUITests" */;
-			buildPhases = (
-				C68C93642DE48A7F00D57FE3 /* Sources */,
-				C68C93652DE48A7F00D57FE3 /* Frameworks */,
-				C68C93662DE48A7F00D57FE3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C68C936A2DE48A7F00D57FE3 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				C68C936B2DE48A7F00D57FE3 /* RunnieriUITests */,
-			);
-			name = RunnieriUITests;
-			packageProductDependencies = (
-			);
-			productName = RunnieriUITests;
-			productReference = C68C93682DE48A7F00D57FE3 /* RunnieriUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -180,10 +158,6 @@
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = C68C934D2DE48A7D00D57FE3;
 					};
-					C68C93672DE48A7F00D57FE3 = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = C68C934D2DE48A7D00D57FE3;
-					};
 				};
 			};
 			buildConfigurationList = C68C93492DE48A7D00D57FE3 /* Build configuration list for PBXProject "Runnieri" */;
@@ -195,6 +169,8 @@
 			);
 			mainGroup = C68C93452DE48A7D00D57FE3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C68C934F2DE48A7D00D57FE3 /* Products */;
 			projectDirPath = "";
@@ -202,7 +178,6 @@
 			targets = (
 				C68C934D2DE48A7D00D57FE3 /* Runnieri */,
 				C68C935D2DE48A7F00D57FE3 /* RunnieriTests */,
-				C68C93672DE48A7F00D57FE3 /* RunnieriUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -216,13 +191,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C68C935C2DE48A7F00D57FE3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C68C93662DE48A7F00D57FE3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -246,13 +214,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C68C93642DE48A7F00D57FE3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -260,11 +221,6 @@
 			isa = PBXTargetDependency;
 			target = C68C934D2DE48A7D00D57FE3 /* Runnieri */;
 			targetProxy = C68C935F2DE48A7F00D57FE3 /* PBXContainerItemProxy */;
-		};
-		C68C936A2DE48A7F00D57FE3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C68C934D2DE48A7D00D57FE3 /* Runnieri */;
-			targetProxy = C68C93692DE48A7F00D57FE3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -393,12 +349,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Runnieri/Runnieri.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Runnieri/Preview Content\"";
 				DEVELOPMENT_TEAM = 74P9R4X97D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Runnieri/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -422,12 +380,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Runnieri/Runnieri.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Runnieri/Preview Content\"";
 				DEVELOPMENT_TEAM = 74P9R4X97D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Runnieri/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -450,6 +410,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 74P9R4X97D;
@@ -469,6 +430,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 74P9R4X97D;
@@ -481,40 +443,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runnieri.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runnieri";
-			};
-			name = Release;
-		};
-		C68C93792DE48A7F00D57FE3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 74P9R4X97D;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.youssef.RunnieriUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Runnieri;
-			};
-			name = Debug;
-		};
-		C68C937A2DE48A7F00D57FE3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 74P9R4X97D;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.youssef.RunnieriUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Runnieri;
 			};
 			name = Release;
 		};
@@ -544,15 +472,6 @@
 			buildConfigurations = (
 				C68C93762DE48A7F00D57FE3 /* Debug */,
 				C68C93772DE48A7F00D57FE3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C68C93782DE48A7F00D57FE3 /* Build configuration list for PBXNativeTarget "RunnieriUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C68C93792DE48A7F00D57FE3 /* Debug */,
-				C68C937A2DE48A7F00D57FE3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

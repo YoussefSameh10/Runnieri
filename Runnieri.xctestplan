@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "76606D24-22FA-4BC5-B942-06148717E4A3",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Runnieri.xcodeproj",
+      "identifier" : "C68C934D2DE48A7D00D57FE3",
+      "name" : "Runnieri"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Runnieri.xcodeproj",
+        "identifier" : "C68C935D2DE48A7F00D57FE3",
+        "name" : "RunnieriTests"
+      }
+    }
+  ],
+  "version" : 2
+}

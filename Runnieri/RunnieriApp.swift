@@ -6,12 +6,45 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct RunnieriApp: App {
+    private var activitiesRepo: ActivitiesRepoImpl?
+    private let healthKitService = HealthKitService()
+    
+    init() {
+        activitiesRepo = ActivitiesRepoImpl()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if let activitiesRepo = activitiesRepo {
+                TabView {
+                    ActivityListView(viewModel: ActivityListViewModel(activitiesRepo: activitiesRepo))
+                        .tabItem {
+                            Label("Activities", systemImage: "list.bullet")
+                        }
+                    let locationService: LocationService = CoreLocationService()
+                    let startUseCase: StartActivityUseCase = StartActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
+                    let stopUseCase: StopActivityUseCase = StopActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
+                    let timeProvider: TimeProvider = RealTimeProvider()
+                    ActivityTrackerView(viewModel: ActivityTrackerViewModel(
+                        startActivityUseCase: startUseCase,
+                        stopActivityUseCase: stopUseCase,
+                        locationService: locationService,
+                        healthKitService: healthKitService,
+                        timeProvider: timeProvider
+                    ))
+                        .tabItem {
+                            Label("Track", systemImage: "figure.walk")
+                        }
+                }
+            } else {
+                ErrorView(message: "Unable to initialize the app. Please relaunch.") {
+                    exit(0)
+                }
+            }
         }
     }
 }
