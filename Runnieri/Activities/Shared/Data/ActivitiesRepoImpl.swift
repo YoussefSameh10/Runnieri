@@ -34,19 +34,15 @@ final class ActivitiesRepoImpl: ActivitiesRepository {
         }
     }
     
-    func startLiveCalorieTracking() async {
-        do {
-            try await healthKitDataSource.startLiveCalorieTracking()
-        } catch {
-            print("Error starting calorie tracking: \(error)")
-        }
+    func startLiveCalorieTracking() async throws {
+        try await healthKitDataSource.startLiveCalorieTracking()
     }
     
-    func stopLiveCalorieTracking() async {
-        await healthKitDataSource.stopLiveCalorieTracking()
+    func stopLiveCalorieTracking() async throws {
+        try await healthKitDataSource.stopLiveCalorieTracking()
     }
     
-    func addActivity(distanceInMeters: Int, startDate: Date, durationInSeconds: TimeInterval) async {
+    func addActivity(distanceInMeters: Int, startDate: Date, durationInSeconds: TimeInterval) async throws {
         let endDate = startDate.addingTimeInterval(durationInSeconds)
         
         do {
@@ -61,26 +57,10 @@ final class ActivitiesRepoImpl: ActivitiesRepository {
             
             try await localDataSource.save(dataModel)
             await loadActivities()
+        } catch let error as ActivityError {
+            throw error
         } catch {
-            print("Error fetching calories from HealthKit: \(error)")
-            await saveActivityWithDefaultCalories(distanceInMeters: distanceInMeters, durationInSeconds: durationInSeconds, endDate: endDate)
-        }
-    }
-    
-    private func saveActivityWithDefaultCalories(distanceInMeters: Int, durationInSeconds: TimeInterval, endDate: Date) async {
-        let activity = Activity(
-            distanceInMeters: distanceInMeters,
-            durationInSeconds: durationInSeconds,
-            date: endDate,
-            caloriesBurned: 0
-        )
-        let dataModel = mapper.dataModel(from: activity)
-        
-        do {
-            try await localDataSource.save(dataModel)
-            await loadActivities()
-        } catch {
-            print("Error saving activity with default calories: \(error)")
+            throw ActivityError.unknown(error)
         }
     }
     

@@ -9,13 +9,13 @@ final class StopActivityInteractor: StopActivityUseCase {
         self.locationService = locationService
     }
     
-    func execute(distance: Int, duration: TimeInterval, startTime: TimeInterval) async {
+    func execute(distance: Int, duration: TimeInterval, startTime: TimeInterval) async throws {
         // Stop all tracking services
         locationService.stopUpdating()
-        await activitiesRepository.stopLiveCalorieTracking()
+        try await activitiesRepository.stopLiveCalorieTracking()
         
         // Save the activity
         let date = Date(timeIntervalSince1970: startTime)
-        await activitiesRepository.addActivity(distanceInMeters: distance, startDate: date, durationInSeconds: duration)
+        try await activitiesRepository.addActivity(distanceInMeters: distance, startDate: date, durationInSeconds: duration)
     }
 } 

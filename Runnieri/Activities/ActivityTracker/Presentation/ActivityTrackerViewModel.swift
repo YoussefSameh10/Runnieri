@@ -87,14 +87,12 @@ class ActivityTrackerViewModel: ObservableObject {
                             self?.updateDuration()
                         }
                     }
-                } catch StartActivityError.notAuthorized {
-                    showPermissionAlert = true
                 } catch {
-                    print("Error starting activity: \(error)")
+                    print("Error: \(error.localizedDescription)")
                     showPermissionAlert = true
                 }
             }
-        default:
+        case .denied, .restricted:
             showPermissionAlert = true
         }
     }
@@ -112,8 +110,12 @@ class ActivityTrackerViewModel: ObservableObject {
         taskProvider.run { [weak self] in
             guard let self else { return }
             guard let startTime = self.startTime else { return }
-            await stopActivityUseCase.execute(distance: distance, duration: duration, startTime: startTime)
-            self.startTime = nil
+            do {
+                try await stopActivityUseCase.execute(distance: distance, duration: duration, startTime: startTime)
+                self.startTime = nil
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
         }
     }
     

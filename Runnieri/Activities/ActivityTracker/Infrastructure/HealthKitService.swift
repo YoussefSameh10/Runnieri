@@ -15,11 +15,11 @@ final class HealthKitService: HealthDataSource {
     
     private func requestAuthorization() async throws -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else {
-            throw NSError(domain: "com.yourapp.healthkit", code: 101, userInfo: [NSLocalizedDescriptionKey: "HealthKit is not available on this device."])
+            throw ActivityError.healthServiceNotAvailable
         }
         
         guard let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
-            throw NSError(domain: "com.yourapp.healthkit", code: 102, userInfo: [NSLocalizedDescriptionKey: "Active Energy Burned type is not available."])
+            throw ActivityError.healthDataUnavailable
         }
         
         let typesToRead: Set<HKObjectType> = [activeEnergyType]
@@ -28,18 +28,19 @@ final class HealthKitService: HealthDataSource {
             try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
             return true
         } catch {
-            print("Error requesting HealthKit authorization: \(error)")
-            return false
+            throw ActivityError.healthServiceError(error)
         }
     }
     
     func startLiveCalorieTracking() async throws {
         let authorized = try await requestAuthorization()
         guard authorized else {
-            throw NSError(domain: "com.yourapp.healthkit", code: 103, userInfo: [NSLocalizedDescriptionKey: "HealthKit authorization denied."])
+            throw ActivityError.healthServiceNotAuthorized
         }
         
-        guard let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else { return }
+        guard let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
+            throw ActivityError.healthDataUnavailable
+        }
         
         activityStartDate = Date()
         
@@ -49,7 +50,7 @@ final class HealthKitService: HealthDataSource {
                 try await healthStore.enableBackgroundDelivery(for: activeEnergyType, frequency: .immediate)
                 backgroundDeliveryEnabled = true
             } catch {
-                print("Error enabling background delivery: \(error)")
+                throw ActivityError.healthServiceError(error)
             }
         }
         
@@ -70,7 +71,7 @@ final class HealthKitService: HealthDataSource {
         observerQuery = query
     }
     
-    func stopLiveCalorieTracking() async {
+    func stopLiveCalorieTracking() async throws {
         if let query = observerQuery {
             healthStore.stop(query)
             observerQuery = nil
@@ -82,7 +83,7 @@ final class HealthKitService: HealthDataSource {
                 try await healthStore.disableBackgroundDelivery(for: activeEnergyType)
                 backgroundDeliveryEnabled = false
             } catch {
-                print("Error disabling background delivery: \(error)")
+                throw ActivityError.healthServiceError(error)
             }
         }
         
@@ -118,11 +119,11 @@ final class HealthKitService: HealthDataSource {
     func fetchActiveEnergyBurned(from startDate: Date, to endDate: Date) async throws -> Double {
         let authorized = try await requestAuthorization()
         guard authorized else {
-            throw NSError(domain: "com.yourapp.healthkit", code: 103, userInfo: [NSLocalizedDescriptionKey: "HealthKit authorization denied."])
+            throw ActivityError.healthServiceNotAuthorized
         }
         
         guard let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
-            throw NSError(domain: "com.yourapp.healthkit", code: 102, userInfo: [NSLocalizedDescriptionKey: "Active Energy Burned type is not available."])
+            throw ActivityError.healthDataUnavailable
         }
         
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
@@ -134,7 +135,7 @@ final class HealthKitService: HealthDataSource {
                 options: .cumulativeSum
             ) { _, result, error in
                 if let error = error {
-                    continuation.resume(throwing: error)
+                    continuation.resume(throwing: ActivityError.healthServiceError(error))
                     return
                 }
                 
