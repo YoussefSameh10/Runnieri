@@ -61,12 +61,9 @@ class ActivityTrackerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
             
-        await activitiesRepository.caloriesPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newCalories in
-                self?.calories = newCalories
-            }
-            .store(in: &cancellables)
+        for await calories in await activitiesRepository.caloriesStream {
+            self.calories = calories
+        }
     }
     
     func startTracking() {

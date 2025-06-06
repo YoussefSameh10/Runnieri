@@ -19,14 +19,14 @@ class ActivityListViewModel: ObservableObject {
     private func bindActivities() {
         taskProvider.runOnMainActor { [weak self] in
             guard let self else { return }
-            await activitiesRepo.activitiesPublisher
-                .receive(on: DispatchQueue.main)
-                .map { activities in
+            for await activities in await activitiesRepo.activitiesStream
+                .map({ activities in
                     activities
                         .sorted { $0.date > $1.date }
                         .map { ActivityMapper().uiModel(from: $0) }
-                }
-                .assign(to: &$activities)
+                }) {
+                self.activities = activities
+            }
         }
     }
 }
