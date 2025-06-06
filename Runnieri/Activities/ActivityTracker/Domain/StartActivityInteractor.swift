@@ -16,11 +16,11 @@ final class StartActivityInteractor: StartActivityUseCase {
             locationService.startUpdating()
             
             // Then start calorie tracking
-            await activitiesRepository.startLiveCalorieTracking()
+            try await activitiesRepository.startLiveCalorieTracking()
         } catch {
             // If anything fails, stop location tracking
             locationService.stopUpdating()
-            throw StartActivityError.trackingError(error)
+            throw ActivityError.unknown(error)
         }
     }
 } 
