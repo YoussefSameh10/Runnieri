@@ -11,7 +11,6 @@ import SwiftData
 @main
 struct RunnieriApp: App {
     private var activitiesRepo: ActivitiesRepoImpl?
-    private let healthKitService = HealthKitService()
     
     init() {
         activitiesRepo = ActivitiesRepoImpl()
@@ -26,14 +25,14 @@ struct RunnieriApp: App {
                             Label("Activities", systemImage: "list.bullet")
                         }
                     let locationService: LocationService = CoreLocationService()
-                    let startUseCase: StartActivityUseCase = StartActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
-                    let stopUseCase: StopActivityUseCase = StopActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
+                    let startUseCase: StartActivityUseCase = StartActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
+                    let stopUseCase: StopActivityUseCase = StopActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
                     let timeProvider: TimeProvider = RealTimeProvider()
                     ActivityTrackerView(viewModel: ActivityTrackerViewModel(
                         startActivityUseCase: startUseCase,
                         stopActivityUseCase: stopUseCase,
                         locationService: locationService,
-                        healthKitService: healthKitService,
+                        activitiesRepository: activitiesRepo,
                         timeProvider: timeProvider
                     ))
                         .tabItem {

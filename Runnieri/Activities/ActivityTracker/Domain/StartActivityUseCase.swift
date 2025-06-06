@@ -1,5 +1,10 @@
 import Foundation
 
+enum StartActivityError: Error {
+    case notAuthorized
+    case trackingError(Error)
+}
+
 protocol StartActivityUseCase {
-    func execute()
+    func execute() async throws
 } 

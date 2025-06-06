@@ -1,16 +1,26 @@
 import Foundation
 
 final class StartActivityInteractor: StartActivityUseCase {
-    private let activitiesRepo: ActivitiesRepository
+    private let activitiesRepository: ActivitiesRepository
     private let locationService: LocationService
     
-    init(activitiesRepo: ActivitiesRepository, locationService: LocationService) {
-        self.activitiesRepo = activitiesRepo
+    init(activitiesRepository: ActivitiesRepository, locationService: LocationService) {
+        self.activitiesRepository = activitiesRepository
         self.locationService = locationService
     }
     
-    func execute() {
-        locationService.reset()
-        locationService.startUpdating()
+    func execute() async throws {
+        do {
+            // Start location tracking first
+            locationService.reset()
+            locationService.startUpdating()
+            
+            // Then start calorie tracking
+            await activitiesRepository.startLiveCalorieTracking()
+        } catch {
+            // If anything fails, stop location tracking
+            locationService.stopUpdating()
+            throw StartActivityError.trackingError(error)
+        }
     }
 } 

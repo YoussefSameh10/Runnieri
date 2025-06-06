@@ -53,7 +53,7 @@ struct ActivityTrackerView: View {
             startActivityUseCase: PreviewStartActivityInteractor(),
             stopActivityUseCase: PreviewStopActivityInteractor(),
             locationService: PreviewLocationService(),
-            healthKitService: HealthKitService()
+            activitiesRepository: PreviewActivitiesRepo()
         )
     )
 } 

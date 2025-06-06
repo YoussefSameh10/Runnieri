@@ -14,7 +14,7 @@ class ActivityTrackerViewModel: ObservableObject {
     private let stopActivityUseCase: StopActivityUseCase
     private let locationService: LocationService
     private let timeProvider: TimeProvider
-    private let healthKitService: HealthKitService
+    private let activitiesRepository: ActivitiesRepository
     private nonisolated let taskProvider: TaskProvider
     private var timerProvider: Timer.Type
     private var startTime: TimeInterval?
@@ -24,7 +24,7 @@ class ActivityTrackerViewModel: ObservableObject {
         startActivityUseCase: StartActivityUseCase,
         stopActivityUseCase: StopActivityUseCase,
         locationService: LocationService,
-        healthKitService: HealthKitService,
+        activitiesRepository: ActivitiesRepository,
         timeProvider: TimeProvider = RealTimeProvider(),
         taskProvider: TaskProvider = RealTaskProvider(),
         timerProvider: Timer.Type = Timer.self
@@ -34,21 +34,25 @@ class ActivityTrackerViewModel: ObservableObject {
         self.locationService = locationService
         self.timeProvider = timeProvider
         self.taskProvider = taskProvider
-        self.healthKitService = healthKitService
+        self.activitiesRepository = activitiesRepository
         self.distance = locationService.distance
         self.timerProvider = timerProvider
         
-        setupSubscriptions()
+        taskProvider.run { [weak self] in
+            await self?.setupSubscriptions()
+        }
     }
     
-    private func setupSubscriptions() {
+    private func setupSubscriptions() async {
         locationService.distancePublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newDistance in
                 self?.distance = newDistance
             }
             .store(in: &cancellables)
             
         locationService.authorizationStatusPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
                 if status == .denied || status == .restricted {
                     self?.showPermissionAlert = true
@@ -57,7 +61,8 @@ class ActivityTrackerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
             
-        healthKitService.caloriesPublisher
+        await activitiesRepository.caloriesPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newCalories in
                 self?.calories = newCalories
             }
@@ -69,16 +74,24 @@ class ActivityTrackerViewModel: ObservableObject {
         case .notDetermined:
             locationService.requestAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
-            isTracking = true
-            duration = 0.0
-            calories = 0.0
-            startTime = timeProvider.currentTime
-            startActivityUseCase.execute()
-            healthKitService.startLiveCalorieTracking()
-            updateDuration()
-            timer = timerProvider.scheduledTimer(withTimeInterval: TimeInterval.oneSecond, repeats: true) { [weak self] _ in
-                self?.taskProvider.runOnMainActor { [weak self] in
-                    self?.updateDuration()
+            Task {
+                do {
+                    try await startActivityUseCase.execute()
+                    isTracking = true
+                    duration = 0.0
+                    calories = 0.0
+                    startTime = timeProvider.currentTime
+                    updateDuration()
+                    timer = timerProvider.scheduledTimer(withTimeInterval: TimeInterval.oneSecond, repeats: true) { [weak self] _ in
+                        self?.taskProvider.runOnMainActor { [weak self] in
+                            self?.updateDuration()
+                        }
+                    }
+                } catch StartActivityError.notAuthorized {
+                    showPermissionAlert = true
+                } catch {
+                    print("Error starting activity: \(error)")
+                    showPermissionAlert = true
                 }
             }
         default:
@@ -95,7 +108,7 @@ class ActivityTrackerViewModel: ObservableObject {
         isTracking = false
         timer?.invalidate()
         timer = nil
-        healthKitService.stopLiveCalorieTracking()
+        
         taskProvider.run { [weak self] in
             guard let self else { return }
             guard let startTime = self.startTime else { return }

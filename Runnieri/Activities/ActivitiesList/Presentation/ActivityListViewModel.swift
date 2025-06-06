@@ -20,6 +20,7 @@ class ActivityListViewModel: ObservableObject {
         taskProvider.runOnMainActor { [weak self] in
             guard let self else { return }
             await activitiesRepo.activitiesPublisher
+                .receive(on: DispatchQueue.main)
                 .map { activities in
                     activities
                         .sorted { $0.date > $1.date }
