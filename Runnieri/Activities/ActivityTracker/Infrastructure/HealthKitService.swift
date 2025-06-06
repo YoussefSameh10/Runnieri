@@ -1,16 +1,19 @@
 import Foundation
 import HealthKit
-import Combine
 
 final class HealthKitService: HealthDataSource {
     private let healthStore = HKHealthStore()
-    private let _caloriesPublisher = CurrentValueSubject<Double, Never>(0.0)
     private var activityStartDate: Date?
     private var observerQuery: HKObserverQuery?
     private var backgroundDeliveryEnabled = false
+    private var caloriesContinuation: AsyncStream<Double>.Continuation
     
-    var caloriesPublisher: AnyPublisher<Double, Never> {
-        _caloriesPublisher.eraseToAnyPublisher()
+    let caloriesStream: AsyncStream<Double>
+    
+    init() {
+        var continuation: AsyncStream<Double>.Continuation!
+        caloriesStream = AsyncStream { continuation = $0 }
+        caloriesContinuation = continuation
     }
     
     private func requestAuthorization() async throws -> Bool {
@@ -88,7 +91,7 @@ final class HealthKitService: HealthDataSource {
         }
         
         activityStartDate = nil
-        _caloriesPublisher.send(0.0)
+        caloriesContinuation.yield(0.0)
     }
     
     private func fetchLatestCalories() {
@@ -109,7 +112,7 @@ final class HealthKitService: HealthDataSource {
             
             if let sum = result?.sumQuantity() {
                 let calories = sum.doubleValue(for: HKUnit.kilocalorie())
-                self?._caloriesPublisher.send(calories)
+                self?.caloriesContinuation.yield(calories)
             }
         }
         
@@ -134,8 +137,8 @@ final class HealthKitService: HealthDataSource {
                 quantitySamplePredicate: predicate,
                 options: .cumulativeSum
             ) { _, result, error in
-                if let error = error {
-                    continuation.resume(throwing: ActivityError.healthServiceError(error))
+                if let _ = error {
+                    continuation.resume(returning: 0)
                     return
                 }
                 

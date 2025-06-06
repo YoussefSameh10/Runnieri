@@ -2,8 +2,8 @@ import Foundation
 import Combine
 
 protocol ActivitiesRepository {
-    var activitiesPublisher: AnyPublisher<[Activity], Never> { get async }
-    var caloriesPublisher: AnyPublisher<Double, Never> { get async }
+    var activitiesStream: AsyncStream<[Activity]> { get async }
+    var caloriesStream: AsyncStream<Double> { get async }
     
     func addActivity(distanceInMeters: Int, startDate: Date, durationInSeconds: TimeInterval) async throws
     func startLiveCalorieTracking() async throws
