@@ -2,10 +2,10 @@ import Foundation
 
 @DataAccessActor
 final class ActivitiesRepoImpl: ActivitiesRepository {
-    private var activitiesContinuation: AsyncStream<[Activity]>.Continuation
-    let activitiesStream: AsyncStream<[Activity]>
+    @AsyncStreamed var activities = [Activity]()
+    var activitiesPublisher: AsyncStream<[Activity]> { $activities }
     
-    let caloriesStream: AsyncStream<Double>
+    var caloriesPublisher: AsyncStream<Double> { healthKitDataSource.caloriesPublisher }
     
     private let localDataSource: any DataSource
     private let mapper: ActivityDataMapper
@@ -21,12 +21,6 @@ final class ActivitiesRepoImpl: ActivitiesRepository {
         self.taskProvider = taskProvider
         self.mapper = ActivityDataMapper()
         self.healthKitDataSource = healthKitDataSource
-        
-        var activitiesContinuation: AsyncStream<[Activity]>.Continuation!
-        activitiesStream = AsyncStream { activitiesContinuation = $0 }
-        self.activitiesContinuation = activitiesContinuation
-        
-        caloriesStream = healthKitDataSource.caloriesStream
         
         taskProvider.run { [weak self] in
             await self?.loadActivities()
@@ -66,10 +60,10 @@ final class ActivitiesRepoImpl: ActivitiesRepository {
     private func loadActivities() async {
         do {
             let dataModels = try await localDataSource.fetch(ActivityDataModel.self, predicate: nil, sortBy: [])
-            activitiesContinuation.yield(dataModels.map { mapper.domainModel(from: $0) })
+            self.activities = dataModels.map { mapper.domainModel(from: $0) }
         } catch {
             print("Error loading activities: \(error)")
-            activitiesContinuation.yield([])
+            self.activities = []
         }
     }
 } 

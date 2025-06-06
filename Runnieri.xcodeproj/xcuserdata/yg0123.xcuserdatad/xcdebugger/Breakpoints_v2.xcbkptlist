@@ -14,8 +14,8 @@
             filePath = "Runnieri/Activities/ActivityTracker/Infrastructure/HealthKitService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "fetchActiveEnergyBurned(from:to:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "Runnieri/Activities/ActivityTracker/Infrastructure/HealthKitService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
             landmarkName = "fetchActiveEnergyBurned(from:to:)"
             landmarkType = "7">
          </BreakpointContent>

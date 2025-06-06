@@ -54,7 +54,7 @@ class ActivityTrackerViewModel: ObservableObject {
             }
         }
             
-        for await calories in await activitiesRepository.caloriesStream {
+        for await calories in await activitiesRepository.caloriesPublisher {
             self.calories = calories
         }
     }

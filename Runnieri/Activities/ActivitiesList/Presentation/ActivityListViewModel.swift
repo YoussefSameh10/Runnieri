@@ -18,7 +18,7 @@ class ActivityListViewModel: ObservableObject {
     private func bindActivities() {
         taskProvider.runOnMainActor { [weak self] in
             guard let self else { return }
-            for await activities in await activitiesRepo.activitiesStream
+            for await activities in await activitiesRepo.activitiesPublisher
                 .map({ activities in
                     activities
                         .sorted { $0.date > $1.date }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol HealthDataSource {
-    var caloriesStream: AsyncStream<Double> { get }
+    var caloriesPublisher: AsyncStream<Double> { get }
     func startLiveCalorieTracking() async throws
     func stopLiveCalorieTracking() async throws
     func fetchActiveEnergyBurned(from startDate: Date, to endDate: Date) async throws -> Double

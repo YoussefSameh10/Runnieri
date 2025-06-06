@@ -6,15 +6,9 @@ final class HealthKitService: HealthDataSource {
     private var activityStartDate: Date?
     private var observerQuery: HKObserverQuery?
     private var backgroundDeliveryEnabled = false
-    private var caloriesContinuation: AsyncStream<Double>.Continuation
     
-    let caloriesStream: AsyncStream<Double>
-    
-    init() {
-        var continuation: AsyncStream<Double>.Continuation!
-        caloriesStream = AsyncStream { continuation = $0 }
-        caloriesContinuation = continuation
-    }
+    @AsyncStreamed var calories = 0.0
+    var caloriesPublisher: AsyncStream<Double> { $calories }
     
     private func requestAuthorization() async throws -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -91,7 +85,7 @@ final class HealthKitService: HealthDataSource {
         }
         
         activityStartDate = nil
-        caloriesContinuation.yield(0.0)
+        calories = 0.0
     }
     
     private func fetchLatestCalories() {
@@ -112,7 +106,7 @@ final class HealthKitService: HealthDataSource {
             
             if let sum = result?.sumQuantity() {
                 let calories = sum.doubleValue(for: HKUnit.kilocalorie())
-                self?.caloriesContinuation.yield(calories)
+                self?.calories = calories
             }
         }
         
