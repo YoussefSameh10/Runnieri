@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 protocol ActivitiesRepository {
     var activitiesStream: AsyncStream<[Activity]> { get async }

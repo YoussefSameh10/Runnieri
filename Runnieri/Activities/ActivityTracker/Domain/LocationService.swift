@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 protocol LocationService: AnyObject {
     var distance: Int { get }

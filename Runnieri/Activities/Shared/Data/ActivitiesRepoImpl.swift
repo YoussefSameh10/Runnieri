@@ -1,7 +1,4 @@
 import Foundation
-import SwiftData
-import Combine
-import HealthKit
 
 @DataAccessActor
 final class ActivitiesRepoImpl: ActivitiesRepository {

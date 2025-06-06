@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 class PreviewLocationService: LocationService {
     @Published private(set) var distance: Int = 1234

@@ -1,6 +1,5 @@
 import Foundation
 import CoreLocation
-import Combine
 
 class CoreLocationService: NSObject, ObservableObject, LocationService {
     @Published var distance: Int = 0 // in meters
