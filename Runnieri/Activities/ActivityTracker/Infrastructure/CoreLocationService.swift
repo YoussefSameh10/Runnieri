@@ -1,12 +1,12 @@
 import Foundation
 import CoreLocation
 
-class CoreLocationService: NSObject, ObservableObject, LocationService {
-    @Published var distance: Int = 0 // in meters
-    @Published var authorizationStatus: LocationAuthState = .notDetermined
+class CoreLocationService: NSObject, LocationService {
+    @AsyncStreamed var authStatus: LocationAuthState = .notDetermined
+    var authStatusPublisher: AsyncStream<LocationAuthState> { $authStatus }
     
-    var distancePublisher: Published<Int>.Publisher { $distance }
-    var authorizationStatusPublisher: Published<LocationAuthState>.Publisher { $authorizationStatus }
+    @AsyncStreamed var distance: Int = 0
+    var distancePublisher: AsyncStream<Int> { $distance }
     
     private let locationManager = CLLocationManager()
     private var lastLocation: CLLocation?
@@ -41,9 +41,7 @@ class CoreLocationService: NSObject, ObservableObject, LocationService {
 
 extension CoreLocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        DispatchQueue.main.async {
-            self.authorizationStatus = status.toDomainModel()
-        }
+        self.authStatus = status.toDomainModel()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

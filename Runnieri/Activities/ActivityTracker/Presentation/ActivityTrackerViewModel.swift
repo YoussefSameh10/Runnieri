@@ -35,7 +35,6 @@ class ActivityTrackerViewModel: ObservableObject {
         self.timeProvider = timeProvider
         self.taskProvider = taskProvider
         self.activitiesRepository = activitiesRepository
-        self.distance = locationService.distance
         self.timerProvider = timerProvider
         
         taskProvider.run { [weak self] in
@@ -44,22 +43,16 @@ class ActivityTrackerViewModel: ObservableObject {
     }
     
     private func setupSubscriptions() async {
-        locationService.distancePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newDistance in
-                self?.distance = newDistance
+        for await newDistance in locationService.distancePublisher {
+            self.distance = newDistance
+        }
+        
+        for await status in locationService.authStatusPublisher {
+            if status == .denied || status == .restricted {
+                self.showPermissionAlert = true
+                self.stopTracking()
             }
-            .store(in: &cancellables)
-            
-        locationService.authorizationStatusPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] status in
-                if status == .denied || status == .restricted {
-                    self?.showPermissionAlert = true
-                    self?.stopTracking()
-                }
-            }
-            .store(in: &cancellables)
+        }
             
         for await calories in await activitiesRepository.caloriesStream {
             self.calories = calories
@@ -67,7 +60,7 @@ class ActivityTrackerViewModel: ObservableObject {
     }
     
     func startTracking() {
-        switch locationService.authorizationStatus {
+        switch locationService.authStatus {
         case .notDetermined:
             locationService.requestAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:

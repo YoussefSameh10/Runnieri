@@ -1,11 +1,11 @@
 import Foundation
 
 class PreviewLocationService: LocationService {
-    @Published private(set) var distance: Int = 1234
-    @Published private(set) var authorizationStatus: LocationAuthState = .authorizedWhenInUse
+    @AsyncStreamed var authStatus: LocationAuthState = .authorizedWhenInUse
+    var authStatusPublisher: AsyncStream<LocationAuthState> { $authStatus }
     
-    var distancePublisher: Published<Int>.Publisher { $distance }
-    var authorizationStatusPublisher: Published<LocationAuthState>.Publisher { $authorizationStatus }
+    @AsyncStreamed var distance: Int = 1234
+    var distancePublisher: AsyncStream<Int> { $distance }
 
     func requestAuthorization() {}
     func startUpdating() {}

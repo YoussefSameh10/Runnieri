@@ -1,10 +1,11 @@
 import Foundation
 
 protocol LocationService: AnyObject {
+    var authStatus: LocationAuthState { get }
     var distance: Int { get }
-    var authorizationStatus: LocationAuthState { get }
-    var distancePublisher: Published<Int>.Publisher { get }
-    var authorizationStatusPublisher: Published<LocationAuthState>.Publisher { get }
+    var authStatusPublisher: AsyncStream<LocationAuthState> { get }
+    var distancePublisher: AsyncStream<Int> { get }
+    
     func requestAuthorization()
     func startUpdating()
     func stopUpdating()
