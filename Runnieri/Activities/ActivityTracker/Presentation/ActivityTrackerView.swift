@@ -13,7 +13,6 @@ struct ActivityTrackerView: View {
             VStack(spacing: 16) {
                 Text(String(format: "Distance: %.2f km", Double(viewModel.distance) / 1000.0))
                     .font(.title2)
-//                    .id(viewModel.distance) // Force view update when distance changes
                 Text("Duration: \(viewModel.formatTime(viewModel.duration))")
                     .font(.title2)
                 Text("Calories: \(viewModel.formatCalories(viewModel.calories))")
