@@ -11,14 +11,17 @@ final class MockTaskProvider: TaskProvider {
     var onComplete: () -> Void = { }
     
     func run(_ block: @escaping () async -> Void) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await block()
+            print("Started Tracking HERE --- MOCK ONCOMPLETE")
             onComplete()
         }
     }
     
     func runOnMainActor(_ block: @escaping @MainActor () async -> Void) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await block()
             onComplete()
         }

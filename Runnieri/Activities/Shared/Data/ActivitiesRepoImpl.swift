@@ -5,19 +5,19 @@ import HealthKit
 
 @DataAccessActor
 final class ActivitiesRepoImpl: ActivitiesRepository {
-    private let _activitiesPublisher = CurrentValueSubject<[Activity], Never>([])
-    var activitiesPublisher: AnyPublisher<[Activity], Never> {
+    nonisolated private let _activitiesPublisher = CurrentValueSubject<[Activity], Never>([])
+    nonisolated var activitiesPublisher: AnyPublisher<[Activity], Never> {
         _activitiesPublisher.eraseToAnyPublisher()
     }
     
-    var caloriesPublisher: AnyPublisher<Double, Never> {
+    nonisolated var caloriesPublisher: AnyPublisher<Double, Never> {
         healthKitDataSource.caloriesPublisher
     }
     
     private let localDataSource: any DataSource
     private let mapper: ActivityDataMapper
     private let taskProvider: TaskProvider
-    private let healthKitDataSource: HealthDataSource
+    nonisolated private let healthKitDataSource: HealthDataSource
     
     init(
         localDataSource: any DataSource = SwiftDataWrapper.getInstance(),

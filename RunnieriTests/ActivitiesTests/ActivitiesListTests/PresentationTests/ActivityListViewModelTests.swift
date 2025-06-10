@@ -13,7 +13,7 @@ final class ActivityListViewModelTests {
     init() {
         activitiesRepo = MockActivitiesRepo()
         cancellables = []
-        sut = ActivityListViewModel(activitiesRepo: activitiesRepo)
+        sut = ActivityListViewModel(activitiesRepo: activitiesRepo, scheduler: ImmediateScheduler.shared)
     }
     
     // MARK: - Initial State Tests
@@ -30,9 +30,24 @@ final class ActivityListViewModelTests {
         let oneDayAgo = now.addingTimeInterval(-TimeInterval.oneDay)
         let oneWeekAgo = now.addingTimeInterval(-TimeInterval.oneWeek)
         
-        let oldestActivity = Activity(distanceInMeters: 1000, durationInSeconds: TimeInterval.oneMinute * 10, date: oneWeekAgo)
-        let middleActivity = Activity(distanceInMeters: 2000, durationInSeconds: TimeInterval.oneMinute * 20, date: oneDayAgo)
-        let newestActivity = Activity(distanceInMeters: 3000, durationInSeconds: TimeInterval.oneMinute * 30, date: now)
+        let oldestActivity = Activity(
+            distanceInMeters: 1000,
+            durationInSeconds: TimeInterval.oneMinute * 10,
+            date: oneWeekAgo,
+            caloriesBurned: 100
+        )
+        let middleActivity = Activity(
+            distanceInMeters: 2000,
+            durationInSeconds: TimeInterval.oneMinute * 20,
+            date: oneDayAgo,
+            caloriesBurned: 200
+        )
+        let newestActivity = Activity(
+            distanceInMeters: 3000,
+            durationInSeconds: TimeInterval.oneMinute * 30,
+            date: now,
+            caloriesBurned: 300
+        )
         
         // When
         activitiesRepo.activities = [oldestActivity, newestActivity, middleActivity]

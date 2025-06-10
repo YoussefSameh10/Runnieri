@@ -27,7 +27,8 @@ class ActivityTrackerViewModel: ObservableObject {
         activitiesRepository: ActivitiesRepository,
         timeProvider: TimeProvider = RealTimeProvider(),
         taskProvider: TaskProvider = RealTaskProvider(),
-        timerProvider: Timer.Type = Timer.self
+        timerProvider: Timer.Type = Timer.self,
+        scheduler: some Scheduler = DispatchQueue.main
     ) {
         self.startActivityUseCase = startActivityUseCase
         self.stopActivityUseCase = stopActivityUseCase
@@ -37,22 +38,19 @@ class ActivityTrackerViewModel: ObservableObject {
         self.activitiesRepository = activitiesRepository
         self.distance = locationService.distance
         self.timerProvider = timerProvider
-        
-        taskProvider.run { [weak self] in
-            await self?.setupSubscriptions()
-        }
+        setupSubscriptions(on: scheduler)
     }
     
-    private func setupSubscriptions() async {
+    private func setupSubscriptions(on scheduler: some Scheduler) {
         locationService.distancePublisher
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { [weak self] newDistance in
                 self?.distance = newDistance
             }
             .store(in: &cancellables)
             
         locationService.authorizationStatusPublisher
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { [weak self] status in
                 if status == .denied || status == .restricted {
                     self?.showPermissionAlert = true
@@ -61,8 +59,8 @@ class ActivityTrackerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
             
-        await activitiesRepository.caloriesPublisher
-            .receive(on: DispatchQueue.main)
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
             .sink { [weak self] newCalories in
                 self?.calories = newCalories
             }
@@ -70,11 +68,12 @@ class ActivityTrackerViewModel: ObservableObject {
     }
     
     func startTracking() {
-        switch locationService.authorizationStatus {
-        case .notDetermined:
-            locationService.requestAuthorization()
-        case .authorizedWhenInUse, .authorizedAlways:
-            Task {
+        taskProvider.run { [weak self] in
+            guard let self else { return }
+            switch locationService.authorizationStatus {
+            case .notDetermined:
+                locationService.requestAuthorization()
+            case .authorizedWhenInUse, .authorizedAlways:
                 do {
                     try await startActivityUseCase.execute()
                     isTracking = true
@@ -91,9 +90,9 @@ class ActivityTrackerViewModel: ObservableObject {
                     print("Error: \(error.localizedDescription)")
                     showPermissionAlert = true
                 }
+            case .denied, .restricted:
+                showPermissionAlert = true
             }
-        case .denied, .restricted:
-            showPermissionAlert = true
         }
     }
     
@@ -103,6 +102,7 @@ class ActivityTrackerViewModel: ObservableObject {
     }
     
     func stopTracking() {
+        guard isTracking else { return }
         isTracking = false
         timer?.invalidate()
         timer = nil

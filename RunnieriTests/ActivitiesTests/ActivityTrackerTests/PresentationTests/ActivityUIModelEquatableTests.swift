@@ -11,13 +11,15 @@ struct ActivityUIModelEquatableTests {
                     id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 expectedIsEqual: true,
                 description: "same ID and properties"
@@ -27,13 +29,15 @@ struct ActivityUIModelEquatableTests {
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 expectedIsEqual: false,
                 description: "different IDs"

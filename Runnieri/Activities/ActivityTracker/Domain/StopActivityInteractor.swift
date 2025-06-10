@@ -14,6 +14,8 @@ final class StopActivityInteractor: StopActivityUseCase {
         locationService.stopUpdating()
         try await activitiesRepository.stopLiveCalorieTracking()
         
+        guard distance > 0 && duration > 0 else { return }
+        
         // Save the activity
         let date = Date(timeIntervalSince1970: startTime)
         try await activitiesRepository.addActivity(distanceInMeters: distance, startDate: date, durationInSeconds: duration)

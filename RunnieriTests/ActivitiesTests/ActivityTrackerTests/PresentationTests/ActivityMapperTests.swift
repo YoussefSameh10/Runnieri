@@ -31,7 +31,8 @@ struct ActivityMapperTests {
         let activity = Activity(
             distanceInMeters: meters,
             durationInSeconds: TimeInterval.oneHour,
-            date: Date()
+            date: Date(),
+            caloriesBurned: 100
         )
         
         // When
@@ -62,7 +63,8 @@ struct ActivityMapperTests {
         let activity = Activity(
             distanceInMeters: 1000,
             durationInSeconds: seconds,
-            date: Date()
+            date: Date(),
+            caloriesBurned: 100
         )
         
         // When
@@ -87,12 +89,38 @@ struct ActivityMapperTests {
         let activity = Activity(
             distanceInMeters: 1000,
             durationInSeconds: TimeInterval.oneHour,
-            date: date
+            date: date,
+            caloriesBurned: 100
         )
         
         // When
         // Then
         #expect(sut.uiModel(from: activity).date == expectedDate)
+    }
+    
+    // MARK: - Calories Formatting Tests
+    
+    @Test(
+        "Map should correctly format various calories",
+        arguments: [
+            (calories: 0, expectedCalories: "0 kcal"),
+            (calories: 1, expectedCalories: "1 kcal"),
+            (calories: 10000, expectedCalories: "10000 kcal"),
+            (calories: -100, expectedCalories: "-100 kcal")
+        ]
+    )
+    func testMapFormatsVariousCalories(calories: Int, expectedCalories: String) {
+        // Given
+        let activity = Activity(
+            distanceInMeters: 1000,
+            durationInSeconds: TimeInterval.oneHour,
+            date: Date(),
+            caloriesBurned: calories
+        )
+        
+        // When
+        // Then
+        #expect(sut.uiModel(from: activity).calories == expectedCalories)
     }
     
     // MARK: - ID Preservation Tests
@@ -103,7 +131,8 @@ struct ActivityMapperTests {
         let activity = Activity(
             distanceInMeters: 1000,
             durationInSeconds: TimeInterval.oneHour,
-            date: Date()
+            date: Date(),
+            caloriesBurned: 100
         )
         
         // When
@@ -118,15 +147,18 @@ struct ActivityMapperTests {
         arguments: [
             (
                 activity: Activity(
+                    id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour + TimeInterval.oneMinute + TimeInterval.oneSecond,
-                    date: Date(timeIntervalSince1970: 0)
+                    date: Date(timeIntervalSince1970: 0),
+                    caloriesBurned: 100
                 ),
                 expectedUIModel: ActivityUIModel(
-                    id: UUID(),
+                    id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "Jan 1, 1970"
+                    date: "Jan 1, 1970",
+                    calories: "100 kcal"
                 )
             )
         ]
@@ -146,19 +178,22 @@ struct ActivityMapperTests {
                 activity: Activity(
                     distanceInMeters: -1000,
                     durationInSeconds: -TimeInterval.oneHour,
-                    date: Date()
+                    date: Date(),
+                    caloriesBurned: -100
                 ),
                 expectedDistance: "-1.00 km",
-                expectedDuration: "-1:00:00"
+                expectedDuration: "-1:00:00",
+                expectedCalories: "-100 kcal"
             )
         ]
     )
-    func testMapHandlesEdgeCases(activity: Activity, expectedDistance: String, expectedDuration: String) {
+    func testMapHandlesEdgeCases(activity: Activity, expectedDistance: String, expectedDuration: String, expectedCalories: String) {
         // When
         let actualUIModel = sut.uiModel(from: activity)
         
         // Then
         #expect(actualUIModel.distance == expectedDistance)
         #expect(actualUIModel.duration == expectedDuration)
+        #expect(actualUIModel.calories == expectedCalories)
     }
 } 
