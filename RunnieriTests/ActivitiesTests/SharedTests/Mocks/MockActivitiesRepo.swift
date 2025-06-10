@@ -13,6 +13,7 @@ class MockActivitiesRepo: ActivitiesRepository {
         $calories.eraseToAnyPublisher()
     }
     var shouldThrowError = false
+    private(set) var isTrackingActive = false
     
     func addActivity(distanceInMeters: Int, startDate: Date, durationInSeconds: TimeInterval) async throws {
         if shouldThrowError {
@@ -28,6 +29,17 @@ class MockActivitiesRepo: ActivitiesRepository {
         activities.insert(activity, at: 0)
     }
     
-    func startLiveCalorieTracking() async throws { }
-    func stopLiveCalorieTracking() async throws { }
+    func startLiveCalorieTracking() async throws {
+        if shouldThrowError {
+            throw NSError(domain: "MockError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Mock error in startLiveCalorieTracking"])
+        }
+        isTrackingActive = true
+    }
+    
+    func stopLiveCalorieTracking() async throws {
+        if shouldThrowError {
+            throw NSError(domain: "MockError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Mock error in stopLiveCalorieTracking"])
+        }
+        isTrackingActive = false
+    }
 } 

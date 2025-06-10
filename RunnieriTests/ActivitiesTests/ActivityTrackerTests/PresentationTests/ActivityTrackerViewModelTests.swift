@@ -89,13 +89,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = authorizationStatus
         
         // When
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-        }
+        await performAsync { sut.startTracking() }
         
         // Then
         #expect(sut.isTracking == expectedIsTracking)
@@ -110,13 +104,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = .authorizedAlways
         
         // When
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-        }
+        await performAsync { sut.startTracking() }
         
         // Then
         #expect(MockTimer.isActive)
@@ -139,23 +127,8 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            self.sut.startTracking()
-        }
-        
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            
-            // When
-            self.simulateAdvancingTime(by: passedTime)
-        }
+        await performAsync { sut.startTracking() }
+        await performAsync { simulateAdvancingTime(by: passedTime) }
         
         // Then
         #expect(self.sut.duration == passedTime)
@@ -166,30 +139,11 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-        }
-        
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            simulateAdvancingTime(by: .oneSecond * 2)
-        }
+        await performAsync { sut.startTracking() }
+        await performAsync { simulateAdvancingTime(by: .oneSecond * 2) }
         
         // When
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.stopTracking()
-        }
+        await performAsync { sut.stopTracking() }
         
         // Then
         #expect(sut.duration == TimeInterval.oneSecond * 2)
@@ -199,31 +153,11 @@ final class ActivityTrackerViewModelTests {
     func testDurationIsNotUpdatedAfterStopping() async {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-            
-        }
-        
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            simulateAdvancingTime(by: .oneSecond)
-        }
+        await performAsync { sut.startTracking() }
+        await performAsync { simulateAdvancingTime(by: .oneSecond) }
         
         let durationBeforeStop = sut.duration
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.stopTracking()
-        }
+        await performAsync { sut.stopTracking() }
         
         // When
        simulateAdvancingTime(by: .oneSecond)
@@ -237,31 +171,13 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-            simulateAdvancingTime(by: .oneSecond * 2)
-        }
+        await performAsync { sut.startTracking() }
+        await performAsync { simulateAdvancingTime(by: .oneSecond * 2) }
         
         // When
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.stopTracking()
-        }
+        await performAsync { sut.stopTracking() }
+        await performAsync { sut.startTracking() }
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-        }
         
         // Then
         #expect(sut.duration == 0.0)
@@ -273,33 +189,13 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.startTracking()
-            
-            locationService.distance = 1000 // 1km
-            
-        }
+        await performAsync { sut.startTracking() }
+        locationService.distance = 1000 // 1km
         
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            simulateAdvancingTime(by: .oneHour)
-        }
+        await performAsync { simulateAdvancingTime(by: .oneHour) }
         
         // When
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            taskProvider.onComplete = {
-                continuation.resume()
-            }
-            sut.stopTracking()
-        }
+        await performAsync { sut.stopTracking() }
         
         // Then
         let expectedDistance = 1000
@@ -337,19 +233,51 @@ final class ActivityTrackerViewModelTests {
         #expect(sut.distance == expectedDistance)
     }
     
-    // MARK: - Authorization Status Tests
-    @Test("Authorization status denied should show alert and stop tracking")
-    func testAuthorizationStatusDeniedShowsAlertAndStopsTracking() {
+    @Test("Calories updates should update calories")
+    func testCaloriesUpdatesUpdatesCalories() async {
         // Given
-        locationService.authorizationStatus = .authorizedWhenInUse
-        sut.startTracking()
+        let expectedCalories = 150.0
         
         // When
-        locationService.authorizationStatus = .denied
+        activitiesRepository.calories = expectedCalories
+        
+        // Then
+        #expect(sut.calories == expectedCalories)
+    }
+    
+    // MARK: - Authorization Status Tests
+    @Test(
+        "Authorization status denied or restricted should show alert and stop tracking",
+        arguments: [LocationAuthState.restricted, .denied]
+    )
+    func testAuthorizationStatusDeniedOrRestrictedShowsAlertAndStopsTracking(authState: LocationAuthState) async {
+        // Given
+        locationService.authorizationStatus = .authorizedAlways
+        await performAsync { sut.startTracking() }
+        
+        // When
+        await performAsync { locationService.authorizationStatus = authState }
         
         // Then
         #expect(!sut.isTracking)
         #expect(sut.showPermissionAlert)
+    }
+    
+    @Test(
+        "Authorization status authorized should not show alert and keeps tracking",
+        arguments: [LocationAuthState.notDetermined, .authorizedWhenInUse, .authorizedAlways]
+    )
+    func testAuthorizationStatusAuthorizedDoesNotShowAlertAndKeepsTracking(authState: LocationAuthState) async {
+        // Given
+        locationService.authorizationStatus = .authorizedAlways
+        await performAsync { sut.startTracking() }
+        
+        // When
+        locationService.authorizationStatus = authState
+        
+        // Then
+        #expect(sut.isTracking)
+        #expect(!sut.showPermissionAlert)
     }
     
     // MARK: - Time Formatting Tests
@@ -375,5 +303,15 @@ extension ActivityTrackerViewModelTests {
     func simulateAdvancingTime(by duration: TimeInterval) {
         timeProvider.advance(by: duration)
         MockTimer.currentTimer?.fire()
+    }
+    
+    func performAsync(_ task: () -> Void) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else { return }
+            taskProvider.onComplete = {
+                continuation.resume()
+            }
+            task()
+        }
     }
 }

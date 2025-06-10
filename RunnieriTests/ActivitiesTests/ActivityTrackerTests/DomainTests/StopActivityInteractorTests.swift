@@ -95,4 +95,23 @@ final class StopActivityInteractorTests {
         // Then
         #expect((!activitiesRepo.activities.isEmpty) == expectedIsActivityAdded, "Activity should \(expectedIsActivityAdded ? "be added" : "not be added") for \(description)")
     }
+    
+    @Test("Execute should throw error when repository fails")
+    func testExecuteThrowsErrorWhenRepositoryFails() async {
+        // Given
+        activitiesRepo.shouldThrowError = true
+        let startTime = Date().timeIntervalSince1970
+        
+        // When
+        do {
+            try await sut.execute(distance: 1000, duration: TimeInterval.oneHour, startTime: startTime)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            // Then
+            let error = error as NSError
+            #expect(error.domain == "MockError", "Error should be from mock repository")
+            #expect(error.code == -1, "Error should have mock error code")
+            #expect(locationService.operations.contains(.stop), "Location service should be stopped when error occurs")
+        }
+    }
 } 

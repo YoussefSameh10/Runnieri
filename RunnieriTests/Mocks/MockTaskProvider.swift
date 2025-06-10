@@ -14,7 +14,6 @@ final class MockTaskProvider: TaskProvider {
         Task { [weak self] in
             guard let self else { return }
             await block()
-            print("Started Tracking HERE --- MOCK ONCOMPLETE")
             onComplete()
         }
     }
