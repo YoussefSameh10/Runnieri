@@ -11,13 +11,15 @@ struct ActivityUIModelPropertiesComparisonTests {
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 expectedAreSameProperties: true,
                 description: "same properties"
@@ -27,13 +29,15 @@ struct ActivityUIModelPropertiesComparisonTests {
                     id: UUID(),
                     distance: "-1.50 km",
                     duration: "-1:00:00",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "0 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "-1.50 km",
                     duration: "-1:00:00",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "0 kcal"
                 ),
                 expectedAreSameProperties: true,
                 description: "negative values"
@@ -43,13 +47,15 @@ struct ActivityUIModelPropertiesComparisonTests {
                     id: UUID(),
                     distance: "",
                     duration: "",
-                    date: ""
+                    date: "",
+                    calories: ""
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "",
                     duration: "",
-                    date: ""
+                    date: "",
+                    calories: ""
                 ),
                 expectedAreSameProperties: true,
                 description: "empty strings"
@@ -59,13 +65,15 @@ struct ActivityUIModelPropertiesComparisonTests {
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "2.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 expectedAreSameProperties: false,
                 description: "different distance"
@@ -75,16 +83,36 @@ struct ActivityUIModelPropertiesComparisonTests {
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "1 Jan 1970"
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 model2: ActivityUIModel(
                     id: UUID(),
                     distance: "1.50 km",
                     duration: "01:01:01",
-                    date: "2 Jan 1970"
+                    date: "2 Jan 1970",
+                    calories: "100 kcal"
                 ),
                 expectedAreSameProperties: false,
                 description: "different date"
+            ),
+            (
+                model1: ActivityUIModel(
+                    id: UUID(),
+                    distance: "1.50 km",
+                    duration: "01:01:01",
+                    date: "1 Jan 1970",
+                    calories: "100 kcal"
+                ),
+                model2: ActivityUIModel(
+                    id: UUID(),
+                    distance: "1.50 km",
+                    duration: "01:01:01",
+                    date: "1 Jan 1970",
+                    calories: "200 kcal"
+                ),
+                expectedAreSameProperties: false,
+                description: "different calories"
             )
         ]
     )

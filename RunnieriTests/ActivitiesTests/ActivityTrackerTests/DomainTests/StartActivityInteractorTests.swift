@@ -10,15 +10,15 @@ final class StartActivityInteractorTests {
     init() {
         activitiesRepo = MockActivitiesRepo()
         locationService = MockLocationService()
-        sut = StartActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
+        sut = StartActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
     }
     
     // MARK: - Execute Tests
     
     @Test("Execute should reset and start location service in correct order")
-    func testExecuteResetsAndStartsLocationMServiceInOrder() {
+    func testExecuteResetsAndStartsLocationMServiceInOrder() async throws {
         // When
-        sut.execute()
+        try await sut.execute()
         
         // Then
         let expectedOperations = [MockLocationService.Operation.reset, .start]

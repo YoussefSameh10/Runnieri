@@ -10,15 +10,18 @@ final class StopActivityInteractorTests {
     init() {
         activitiesRepo = MockActivitiesRepo()
         locationService = MockLocationService()
-        sut = StopActivityInteractor(activitiesRepo: activitiesRepo, locationService: locationService)
+        sut = StopActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
     }
     
     // MARK: - Execute Tests
     
     @Test("Execute should stop location updates")
-    func testExecuteStopsLocationUpdates() async {
+    func testExecuteStopsLocationUpdates() async throws {
+        // Given
+        let startTime = Date().timeIntervalSince1970
+        
         // When
-        await sut.execute(distance: 1000, duration: TimeInterval.oneHour)
+        try await sut.execute(distance: 1000, duration: TimeInterval.oneHour, startTime: startTime)
         
         // Then
         let expectedOperations = [MockLocationService.Operation.stop]
@@ -26,13 +29,14 @@ final class StopActivityInteractorTests {
     }
     
     @Test("Execute should add activity when distance and duration are positive")
-    func testExecuteAddsActivityWhenDistanceAndDurationArePositive() async {
+    func testExecuteAddsActivityWhenDistanceAndDurationArePositive() async throws {
         // Given
         let expectedDistance = 1000
         let expectedDuration = TimeInterval.oneHour
+        let startTime = Date().timeIntervalSince1970
         
         // When
-        await sut.execute(distance: expectedDistance, duration: expectedDuration)
+        try await sut.execute(distance: expectedDistance, duration: expectedDuration, startTime: startTime)
         
         // Then
         let expectedActivityCount = 1
@@ -81,9 +85,12 @@ final class StopActivityInteractorTests {
         duration: TimeInterval,
         expectedIsActivityAdded: Bool,
         description: String
-    ) async {
+    ) async throws {
+        // Given
+        let startTime = Date().timeIntervalSince1970
+        
         // When
-        await sut.execute(distance: distance, duration: duration)
+        try await sut.execute(distance: distance, duration: duration, startTime: startTime)
         
         // Then
         #expect((!activitiesRepo.activities.isEmpty) == expectedIsActivityAdded, "Activity should \(expectedIsActivityAdded ? "be added" : "not be added") for \(description)")
