@@ -88,7 +88,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = authorizationStatus
         
         // When
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         
         // Then
         #expect(sut.isTracking == expectedIsTracking)
@@ -103,7 +103,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = .authorizedAlways
         
         // When
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         
         // Then
         #expect(MockTimer.isActive)
@@ -126,43 +126,11 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         await performAsync { simulateAdvancingTime(by: passedTime) }
         
         // Then
         #expect(self.sut.liveActivity?.duration == passedTime)
-    }
-    
-    @Test("Duration is preserved after tracking stops")
-    func testDurationIsPreservedAfterStopping() async {
-        // Given
-        locationService.authorizationStatus = .authorizedWhenInUse
-        
-        await performAsync { sut.startTracking() }
-        await performAsync { simulateAdvancingTime(by: .oneSecond * 2) }
-        
-        // When
-        await performAsync { sut.stopTracking() }
-        
-        // Then
-        #expect(sut.liveActivity?.duration == TimeInterval.oneSecond * 2)
-    }
-    
-    @Test("Duration is not updated after stopping")
-    func testDurationIsNotUpdatedAfterStopping() async {
-        // Given
-        locationService.authorizationStatus = .authorizedWhenInUse
-        await performAsync { sut.startTracking() }
-        await performAsync { simulateAdvancingTime(by: .oneSecond) }
-        
-        let durationBeforeStop = sut.liveActivity?.duration
-        await performAsync { sut.stopTracking() }
-        
-        // When
-       simulateAdvancingTime(by: .oneSecond)
-        
-        // Then
-        #expect(sut.liveActivity?.duration == durationBeforeStop)
     }
     
     @Test("Duration is reset when tracking restarts")
@@ -170,12 +138,12 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         await performAsync { simulateAdvancingTime(by: .oneSecond * 2) }
         
         // When
-        await performAsync { sut.stopTracking() }
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStopTracking() }
+        await performAsync { sut.onTapStartTracking() }
         
         
         // Then
@@ -188,13 +156,13 @@ final class ActivityTrackerViewModelTests {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
         
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         locationService.distance = 1000 // 1km
         
         await performAsync { simulateAdvancingTime(by: .oneHour) }
         
         // When
-        await performAsync { sut.stopTracking() }
+        await performAsync { sut.onTapStopTracking() }
         
         // Then
         let expectedDistance = 1000
@@ -207,16 +175,29 @@ final class ActivityTrackerViewModelTests {
     }
     
     @Test("Stop tracking stops timer")
-    func testStopTrackingStopsTimer() {
+    func testStopTrackingStopsTimer() async {
         // Given
         locationService.authorizationStatus = .authorizedAlways
-        sut.startTracking()
+        await performAsync { sut.onTapStartTracking() }
         
         // When
-        sut.stopTracking()
+        await performAsync { sut.onTapStopTracking() }
         
         // Then
         #expect(!MockTimer.isActive)
+    }
+    
+    @Test("Stop tracking resets activity")
+    func testStopTrackingResetsActivity() async {
+        // Given
+        locationService.authorizationStatus = .authorizedAlways
+        await performAsync { sut.onTapStartTracking() }
+        
+        // When
+        await performAsync { sut.onTapStopTracking() }
+        
+        // Then
+        #expect(sut.liveActivity == nil)
     }
     
     // MARK: - Location Updates Tests
@@ -227,7 +208,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = .authorizedAlways
         
         // When
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         locationService.distance = expectedDistance
         
         // Then
@@ -254,7 +235,7 @@ final class ActivityTrackerViewModelTests {
         locationService.authorizationStatus = .authorizedAlways
         
         // When
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         activitiesRepository.calories = Double(expectedCalories)
         
         // Then
@@ -281,7 +262,7 @@ final class ActivityTrackerViewModelTests {
     func testAuthorizationStatusDeniedOrRestrictedShowsAlertAndStopsTracking(authState: LocationAuthState) async {
         // Given
         locationService.authorizationStatus = .authorizedAlways
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         
         // When
         await performAsync { locationService.authorizationStatus = authState }
@@ -298,7 +279,7 @@ final class ActivityTrackerViewModelTests {
     func testAuthorizationStatusAuthorizedDoesNotShowAlertAndKeepsTracking(authState: LocationAuthState) async {
         // Given
         locationService.authorizationStatus = .authorizedAlways
-        await performAsync { sut.startTracking() }
+        await performAsync { sut.onTapStartTracking() }
         
         // When
         locationService.authorizationStatus = authState
