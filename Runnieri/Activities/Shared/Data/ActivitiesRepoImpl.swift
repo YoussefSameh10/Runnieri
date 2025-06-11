@@ -42,15 +42,15 @@ final class ActivitiesRepoImpl: ActivitiesRepository {
         try await healthKitDataSource.stopLiveCalorieTracking()
     }
     
-    func addActivity(distanceInMeters: Int, startDate: Date, durationInSeconds: TimeInterval) async throws {
-        let endDate = startDate.addingTimeInterval(durationInSeconds)
+    func addActivity(distanceInMeters: Int, startTime: TimeInterval, durationInSeconds: TimeInterval) async throws {
+        let endTime = startTime + durationInSeconds
         
         do {
-            let caloriesBurned = try await healthKitDataSource.fetchActiveEnergyBurned(from: startDate, to: endDate)
+            let caloriesBurned = try await healthKitDataSource.fetchActiveEnergyBurned(from: startTime, to: endTime)
             let activity = Activity(
                 distanceInMeters: distanceInMeters,
                 durationInSeconds: durationInSeconds,
-                date: endDate,
+                date: endTime.absoluteDate,
                 caloriesBurned: Int(round(caloriesBurned))
             )
             let dataModel = mapper.dataModel(from: activity)

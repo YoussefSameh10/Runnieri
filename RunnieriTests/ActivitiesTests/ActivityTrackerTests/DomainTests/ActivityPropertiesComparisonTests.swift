@@ -10,13 +10,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedAreSameProperties: true,
@@ -26,13 +26,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: -1500,
                     durationInSeconds: -TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: -100
                 ),
                 activity2: Activity(
                     distanceInMeters: -1500,
                     durationInSeconds: -TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: -100
                 ),
                 expectedAreSameProperties: true,
@@ -42,13 +42,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: 0,
                     durationInSeconds: 0,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 0
                 ),
                 activity2: Activity(
                     distanceInMeters: 0,
                     durationInSeconds: 0,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 0
                 ),
                 expectedAreSameProperties: true,
@@ -58,13 +58,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     distanceInMeters: 2500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedAreSameProperties: false,
@@ -74,13 +74,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: TimeInterval.oneDay),
+                    date: TimeInterval.oneDay.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedAreSameProperties: false,
@@ -90,13 +90,13 @@ struct ActivityPropertiesComparisonTests {
                 activity1: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 200
                 ),
                 expectedAreSameProperties: false,

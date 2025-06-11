@@ -17,7 +17,6 @@ final class StopActivityInteractor: StopActivityUseCase {
         guard distance > 0 && duration > 0 else { return }
         
         // Save the activity
-        let date = Date(timeIntervalSince1970: startTime)
-        try await activitiesRepository.addActivity(distanceInMeters: distance, startDate: date, durationInSeconds: duration)
+        try await activitiesRepository.addActivity(distanceInMeters: distance, startTime: startTime, durationInSeconds: duration)
     }
 } 
