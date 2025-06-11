@@ -15,17 +15,11 @@ class MockActivitiesRepo: ActivitiesRepository {
     var shouldThrowError = false
     private(set) var isTrackingActive = false
     
-    func addActivity(distanceInMeters: Int, startTime: TimeInterval, durationInSeconds: TimeInterval) async throws {
+    func addActivity(_ activity: Activity) async throws {
         if shouldThrowError {
             throw NSError(domain: "MockError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Mock error"])
         }
         
-        let activity = Activity(
-            distanceInMeters: distanceInMeters,
-            durationInSeconds: durationInSeconds,
-            date: Date(timeIntervalSince1970: startTime + durationInSeconds),
-            caloriesBurned: Int(round(calories))
-        )
         activities.insert(activity, at: 0)
     }
     

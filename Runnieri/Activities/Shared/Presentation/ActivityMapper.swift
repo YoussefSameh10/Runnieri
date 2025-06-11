@@ -26,6 +26,16 @@ final class ActivityMapper {
             calories: formatCalories(liveModel.calories)
         )
     }
+    
+    func domainModel(from liveModel: LiveActivityUIModel) -> Activity {
+        Activity(
+            id: liveModel.id,
+            distanceInMeters: liveModel.distance,
+            durationInSeconds: liveModel.duration,
+            date: liveModel.startTime.absoluteDate,
+            caloriesBurned: liveModel.calories
+        )
+    }
 }
 
 private extension ActivityMapper {
