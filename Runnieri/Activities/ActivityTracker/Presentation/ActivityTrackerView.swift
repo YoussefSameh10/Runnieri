@@ -10,28 +10,10 @@ struct ActivityTrackerView: View {
                 .bold()
                 .padding(.top, 60)
             
-            VStack(spacing: 16) {
-                HStack(spacing: 8) {
-                    Text("Distance:")
-                    Text(viewModel.formattedActivity.distance)
-                }
-                .font(.title2)
-                
-                HStack(spacing: 8) {
-                    Text("Duration:")
-                    Text(viewModel.formattedActivity.duration)
-                }
-                .font(.title2)
-                
-                HStack(spacing: 8) {
-                    Text("Calories:")
-                    Text(viewModel.formattedActivity.calories)
-                }
-                .font(.title2)
-                .foregroundColor(.orange)
+            if viewModel.isTracking {
+                LiveActivityDetails(activity: viewModel.formattedActivity)
+                Spacer()
             }
-            
-            Spacer()
             
             Button(action: {
                 if viewModel.isTracking {
@@ -53,6 +35,33 @@ struct ActivityTrackerView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Please enable location permissions in Settings to track your activity.")
+        }
+    }
+}
+
+private struct LiveActivityDetails: View {
+    var activity: ActivityUIModel
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 8) {
+                Text("Distance:")
+                Text(activity.distance)
+            }
+            .font(.title2)
+            
+            HStack(spacing: 8) {
+                Text("Duration:")
+                Text(activity.duration)
+            }
+            .font(.title2)
+            
+            HStack(spacing: 8) {
+                Text("Calories:")
+                Text(activity.calories)
+            }
+            .font(.title2)
+            .foregroundColor(.orange)
         }
     }
 }
