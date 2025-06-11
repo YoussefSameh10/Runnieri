@@ -316,4 +316,34 @@ struct ActivityMapperTests {
         #expect(actualUIModel.duration == expectedDuration)
         #expect(actualUIModel.calories == expectedCalories)
     }
+    
+    // MARK: Domain Model from UI Live Model
+    @Test(
+        "Map from ui live model to domain model",
+        arguments: [
+            (
+                liveActivity: LiveActivityUIModel(
+                    id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
+                    distance: 1000,
+                    duration: TimeInterval.oneHour,
+                    startTime: TimeInterval.zero,
+                    calories: 100
+                ),
+                expectedDomainModel: Activity(
+                    id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
+                    distanceInMeters: 1000,
+                    durationInSeconds: TimeInterval.oneHour,
+                    date: TimeInterval.zero.absoluteDate,
+                    caloriesBurned: 100
+                )
+            )
+        ]
+    )
+    func testMapFromUILiveModelToDomainModelHandlesEdgeCases(liveActivity: LiveActivityUIModel, expectedDomainModel: Activity) {
+        // When
+        let actualDomainModel = sut.domainModel(from: liveActivity)
+        
+        // Then
+        #expect(actualDomainModel == expectedDomainModel)
+    }
 }

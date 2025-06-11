@@ -7,10 +7,10 @@ final class MockStopActivityInteractor: StopActivityUseCase {
     var lastDuration: TimeInterval?
     var lastStartTime: TimeInterval?
     
-    func execute(distance: Int, duration: TimeInterval, startTime: TimeInterval) async throws {
+    func execute(_ activity: Activity) async throws {
         wasExecuted = true
-        lastDistance = distance
-        lastDuration = duration
-        lastStartTime = startTime
+        lastDistance = activity.distanceInMeters
+        lastDuration = activity.durationInSeconds
+        lastStartTime = activity.date.timeIntervalSince1970
     }
 } 

@@ -9,14 +9,14 @@ final class StopActivityInteractor: StopActivityUseCase {
         self.locationService = locationService
     }
     
-    func execute(distance: Int, duration: TimeInterval, startTime: TimeInterval) async throws {
+    func execute(_ activity: Activity) async throws {
         // Stop all tracking services
         locationService.stopUpdating()
         try await activitiesRepository.stopLiveCalorieTracking()
         
-        guard distance > 0 && duration > 0 else { return }
+        guard activity.distanceInMeters > 0 && activity.durationInSeconds > 0 else { return }
         
         // Save the activity
-        try await activitiesRepository.addActivity(distanceInMeters: distance, startTime: startTime, durationInSeconds: duration)
+        try await activitiesRepository.addActivity(activity)
     }
 } 

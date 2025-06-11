@@ -21,7 +21,14 @@ final class StopActivityInteractorTests {
         let startTime = Date().timeIntervalSince1970
         
         // When
-        try await sut.execute(distance: 1000, duration: TimeInterval.oneHour, startTime: startTime)
+        try await sut.execute(
+            Activity(
+                distanceInMeters: 1000,
+                durationInSeconds: .oneHour,
+                date: startTime.absoluteDate,
+                caloriesBurned: 100
+            )
+        )
         
         // Then
         let expectedOperations = [MockLocationService.Operation.stop]
@@ -33,16 +40,26 @@ final class StopActivityInteractorTests {
         // Given
         let expectedDistance = 1000
         let expectedDuration = TimeInterval.oneHour
-        let startTime = Date().timeIntervalSince1970
+        let expectedCalories = 100
+        let expectedDate = Date()
         
         // When
-        try await sut.execute(distance: expectedDistance, duration: expectedDuration, startTime: startTime)
+        try await sut.execute(
+            Activity(
+                distanceInMeters: expectedDistance,
+                durationInSeconds: expectedDuration,
+                date: expectedDate,
+                caloriesBurned: expectedCalories
+            )
+        )
         
         // Then
         let expectedActivityCount = 1
         #expect(activitiesRepo.activities.count == expectedActivityCount)
         #expect(activitiesRepo.activities.first?.distanceInMeters == expectedDistance)
         #expect(activitiesRepo.activities.first?.durationInSeconds == expectedDuration)
+        #expect(activitiesRepo.activities.first?.caloriesBurned == expectedCalories)
+        #expect(activitiesRepo.activities.first?.date == expectedDate)
     }
     
     @Test(
@@ -86,11 +103,15 @@ final class StopActivityInteractorTests {
         expectedIsActivityAdded: Bool,
         description: String
     ) async throws {
-        // Given
-        let startTime = Date().timeIntervalSince1970
-        
         // When
-        try await sut.execute(distance: distance, duration: duration, startTime: startTime)
+        try await sut.execute(
+            Activity(
+                distanceInMeters: distance,
+                durationInSeconds: duration,
+                date: Date(),
+                caloriesBurned: 100
+            )
+        )
         
         // Then
         #expect((!activitiesRepo.activities.isEmpty) == expectedIsActivityAdded, "Activity should \(expectedIsActivityAdded ? "be added" : "not be added") for \(description)")
@@ -100,11 +121,17 @@ final class StopActivityInteractorTests {
     func testExecuteThrowsErrorWhenRepositoryFails() async {
         // Given
         activitiesRepo.shouldThrowError = true
-        let startTime = Date().timeIntervalSince1970
         
         // When
         do {
-            try await sut.execute(distance: 1000, duration: TimeInterval.oneHour, startTime: startTime)
+            try await sut.execute(
+                Activity(
+                    distanceInMeters: 1000,
+                    durationInSeconds: .oneHour,
+                    date: Date(),
+                    caloriesBurned: 100
+                )
+            )
             Issue.record("Expected error to be thrown")
         } catch {
             // Then

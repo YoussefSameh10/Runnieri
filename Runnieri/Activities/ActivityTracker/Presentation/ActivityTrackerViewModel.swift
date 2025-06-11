@@ -146,7 +146,7 @@ class ActivityTrackerViewModel: ObservableObject {
         taskProvider.run { [weak self] in
             guard let self, let liveActivity else { return }
             do {
-                try await stopActivityUseCase.execute(distance: liveActivity.distance, duration: liveActivity.duration, startTime: liveActivity.startTime)
+                try await stopActivityUseCase.execute(ActivityMapper().domainModel(from: liveActivity))
             } catch {
                 print("Error: \(error.localizedDescription)")
             }
