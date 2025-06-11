@@ -45,33 +45,7 @@ class ActivityTrackerViewModel: ObservableObject {
         return ActivityMapper().uiModel(from: liveActivity)
     }
     
-    private func setupSubscriptions(on scheduler: some Scheduler) {
-        locationService.distancePublisher
-            .receive(on: scheduler)
-            .sink { [weak self] newDistance in
-                self?.updateDistance(newDistance)
-            }
-            .store(in: &cancellables)
-            
-        locationService.authorizationStatusPublisher
-            .receive(on: scheduler)
-            .sink { [weak self] status in
-                if status == .denied || status == .restricted {
-                    self?.showPermissionAlert = true
-                    self?.stopTracking()
-                }
-            }
-            .store(in: &cancellables)
-            
-        activitiesRepository.caloriesPublisher
-            .receive(on: scheduler)
-            .sink { [weak self] newCalories in
-                self?.updateCalories(Int(newCalories))
-            }
-            .store(in: &cancellables)
-    }
-    
-    func startTracking() {
+    func onTapStartTracking() {
         taskProvider.run { [weak self] in
             guard let self else { return }
             switch locationService.authorizationStatus {
@@ -79,21 +53,7 @@ class ActivityTrackerViewModel: ObservableObject {
                 locationService.requestAuthorization()
             case .authorizedWhenInUse, .authorizedAlways:
                 do {
-                    try await startActivityUseCase.execute()
-                    liveActivity = LiveActivityUIModel(
-                        id: UUID(),
-                        distance: 0,
-                        duration: 0,
-                        startTime: timeProvider.currentTime,
-                        calories: 0
-                    )
-                    isTracking = true
-                    updateDuration()
-                    timer = timerProvider.scheduledTimer(withTimeInterval: TimeInterval.oneSecond, repeats: true) { [weak self] _ in
-                        self?.taskProvider.runOnMainActor { [weak self] in
-                            self?.updateDuration()
-                        }
-                    }
+                    try await startTracking()
                 } catch {
                     print("Error: \(error.localizedDescription)")
                     showPermissionAlert = true
@@ -102,6 +62,74 @@ class ActivityTrackerViewModel: ObservableObject {
                 showPermissionAlert = true
             }
         }
+    }
+    
+    func onTapStopTracking() {
+        guard isTracking else { return }
+        isTracking = false
+        cancelTimer()
+        
+        taskProvider.run { [weak self] in
+            guard let self, let liveActivity else { return }
+            do {
+                try await stopActivityUseCase.execute(ActivityMapper().domainModel(from: liveActivity))
+                self.liveActivity = nil
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func setupSubscriptions(on scheduler: some Scheduler) {
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func startTracking() async throws {
+        try await startActivityUseCase.execute()
+        liveActivity = LiveActivityUIModel(
+            id: UUID(),
+            distance: 0,
+            duration: 0,
+            startTime: timeProvider.currentTime,
+            calories: 0
+        )
+        isTracking = true
+        scheduleTimer()
+    }
+    
+    private func scheduleTimer() {
+        timer = timerProvider.scheduledTimer(withTimeInterval: TimeInterval.oneSecond, repeats: true) { [weak self] _ in
+            self?.taskProvider.runOnMainActor { [weak self] in
+                self?.updateDuration()
+            }
+        }
+    }
+    
+    private func cancelTimer() {
+        timer?.invalidate()
+        timer = nil
     }
     
     private func updateDistance(_ newDistance: Int) {
@@ -135,21 +163,5 @@ class ActivityTrackerViewModel: ObservableObject {
             startTime: liveActivity.startTime,
             calories: liveActivity.calories
         )
-    }
-    
-    func stopTracking() {
-        guard isTracking else { return }
-        isTracking = false
-        timer?.invalidate()
-        timer = nil
-        
-        taskProvider.run { [weak self] in
-            guard let self, let liveActivity else { return }
-            do {
-                try await stopActivityUseCase.execute(ActivityMapper().domainModel(from: liveActivity))
-            } catch {
-                print("Error: \(error.localizedDescription)")
-            }
-        }
     }
 }

@@ -35,9 +35,9 @@ struct ActivityTrackerView: View {
             
             Button(action: {
                 if viewModel.isTracking {
-                    viewModel.stopTracking()
+                    viewModel.onTapStopTracking()
                 } else {
-                    viewModel.startTracking()
+                    viewModel.onTapStartTracking()
                 }
             }) {
                 Text(viewModel.isTracking ? "Stop" : "Start")
