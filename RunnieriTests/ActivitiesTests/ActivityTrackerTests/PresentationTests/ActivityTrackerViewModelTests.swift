@@ -152,26 +152,36 @@ final class ActivityTrackerViewModelTests {
     
     // MARK: - Stop Tracking Tests
     @Test("Stop tracking should stop tracking and save activity")
-    func testStopTrackingStopsTrackingAndSavesActivity() async {
+    func testStopTrackingStopsTrackingAndSavesActivity() async throws {
         // Given
         locationService.authorizationStatus = .authorizedWhenInUse
-        
         await performAsync { sut.onTapStartTracking() }
-        locationService.distance = 1000 // 1km
         
-        await performAsync { simulateAdvancingTime(by: .oneHour) }
+        let expectedID = try #require(sut.liveActivity?.id)
+        let expectedDistance = 1000
+        let expectedDuration = TimeInterval.oneHour
+        let expectedCalories = 50
+        let expectedDate = try #require(sut.liveActivity?.startTime.absoluteDate)
+        
+        locationService.distance = expectedDistance
+        activitiesRepository.calories = Double(expectedCalories)
+        
+        await performAsync { simulateAdvancingTime(by: expectedDuration) }
         
         // When
         await performAsync { sut.onTapStopTracking() }
         
         // Then
-        let expectedDistance = 1000
-        let expectedDuration: TimeInterval = TimeInterval.oneHour
+        let expectedActivity = Activity(
+            id: expectedID,
+            distanceInMeters: expectedDistance,
+            durationInSeconds: expectedDuration,
+            date: expectedDate,
+            caloriesBurned: expectedCalories
+        )
         
         #expect(!sut.isTracking)
-        #expect(stopActivityUseCase.wasExecuted)
-        #expect(stopActivityUseCase.lastDistance == expectedDistance)
-        #expect(stopActivityUseCase.lastDuration == expectedDuration)
+        #expect(stopActivityUseCase.activity == expectedActivity)
     }
     
     @Test("Stop tracking stops timer")
