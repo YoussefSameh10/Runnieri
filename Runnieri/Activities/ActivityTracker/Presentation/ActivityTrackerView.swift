@@ -11,13 +11,24 @@ struct ActivityTrackerView: View {
                 .padding(.top, 60)
             
             VStack(spacing: 16) {
-                Text(String(format: "Distance: %.2f km", Double(viewModel.distance) / 1000.0))
-                    .font(.title2)
-                Text("Duration: \(viewModel.formatTime(viewModel.duration))")
-                    .font(.title2)
-                Text("Calories: \(viewModel.formatCalories(viewModel.calories))")
-                    .font(.title2)
-                    .foregroundColor(.orange)
+                HStack(spacing: 8) {
+                    Text("Distance:")
+                    Text(viewModel.formattedActivity.distance)
+                }
+                .font(.title2)
+                
+                HStack(spacing: 8) {
+                    Text("Duration:")
+                    Text(viewModel.formattedActivity.duration)
+                }
+                .font(.title2)
+                
+                HStack(spacing: 8) {
+                    Text("Calories:")
+                    Text(viewModel.formattedActivity.calories)
+                }
+                .font(.title2)
+                .foregroundColor(.orange)
             }
             
             Spacer()

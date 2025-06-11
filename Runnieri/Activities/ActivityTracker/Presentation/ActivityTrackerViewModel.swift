@@ -4,10 +4,8 @@ import Combine
 @MainActor
 class ActivityTrackerViewModel: ObservableObject {
     @Published var isTracking = false
-    @Published var duration: TimeInterval = 0.0
+    @Published var liveActivity: LiveActivityUIModel?
     @Published var showPermissionAlert = false
-    @Published var distance: Int = 0
-    @Published var calories: Double = 0.0
     
     private var timer: Timer?
     private let startActivityUseCase: StartActivityUseCase
@@ -17,7 +15,6 @@ class ActivityTrackerViewModel: ObservableObject {
     private let activitiesRepository: ActivitiesRepository
     private nonisolated let taskProvider: TaskProvider
     private var timerProvider: Timer.Type
-    private var startTime: TimeInterval?
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -36,16 +33,23 @@ class ActivityTrackerViewModel: ObservableObject {
         self.timeProvider = timeProvider
         self.taskProvider = taskProvider
         self.activitiesRepository = activitiesRepository
-        self.distance = locationService.distance
         self.timerProvider = timerProvider
         setupSubscriptions(on: scheduler)
+    }
+    
+    var formattedActivity: ActivityUIModel {
+        guard let liveActivity else {
+            return ActivityUIModel(id: UUID(), distance: "---", duration: "---", date: "---", calories: "---")
+        }
+        
+        return ActivityMapper().uiModel(from: liveActivity)
     }
     
     private func setupSubscriptions(on scheduler: some Scheduler) {
         locationService.distancePublisher
             .receive(on: scheduler)
             .sink { [weak self] newDistance in
-                self?.distance = newDistance
+                self?.updateDistance(newDistance)
             }
             .store(in: &cancellables)
             
@@ -62,7 +66,7 @@ class ActivityTrackerViewModel: ObservableObject {
         activitiesRepository.caloriesPublisher
             .receive(on: scheduler)
             .sink { [weak self] newCalories in
-                self?.calories = newCalories
+                self?.updateCalories(Int(newCalories))
             }
             .store(in: &cancellables)
     }
@@ -76,10 +80,14 @@ class ActivityTrackerViewModel: ObservableObject {
             case .authorizedWhenInUse, .authorizedAlways:
                 do {
                     try await startActivityUseCase.execute()
+                    liveActivity = LiveActivityUIModel(
+                        id: UUID(),
+                        distance: 0,
+                        duration: 0,
+                        startTime: timeProvider.currentTime,
+                        calories: 0
+                    )
                     isTracking = true
-                    duration = 0.0
-                    calories = 0.0
-                    startTime = timeProvider.currentTime
                     updateDuration()
                     timer = timerProvider.scheduledTimer(withTimeInterval: TimeInterval.oneSecond, repeats: true) { [weak self] _ in
                         self?.taskProvider.runOnMainActor { [weak self] in
@@ -96,9 +104,37 @@ class ActivityTrackerViewModel: ObservableObject {
         }
     }
     
+    private func updateDistance(_ newDistance: Int) {
+        guard isTracking, let liveActivity else { return }
+        self.liveActivity = LiveActivityUIModel(
+            id: liveActivity.id,
+            distance: newDistance,
+            duration: liveActivity.duration,
+            startTime: liveActivity.startTime,
+            calories: liveActivity.calories
+        )
+    }
+    
+    private func updateCalories(_ newCalories: Int) {
+        guard isTracking, let liveActivity else { return }
+        self.liveActivity = LiveActivityUIModel(
+            id: liveActivity.id,
+            distance: liveActivity.distance,
+            duration: liveActivity.duration,
+            startTime: liveActivity.startTime,
+            calories: newCalories
+        )
+    }
+    
     private func updateDuration() {
-        guard let startTime = startTime else { return }
-        duration = timeProvider.currentTime - startTime
+        guard isTracking, let liveActivity else { return }
+        self.liveActivity = LiveActivityUIModel(
+            id: liveActivity.id,
+            distance: liveActivity.distance,
+            duration: timeProvider.currentTime - liveActivity.startTime,
+            startTime: liveActivity.startTime,
+            calories: liveActivity.calories
+        )
     }
     
     func stopTracking() {
@@ -108,25 +144,12 @@ class ActivityTrackerViewModel: ObservableObject {
         timer = nil
         
         taskProvider.run { [weak self] in
-            guard let self else { return }
-            guard let startTime = self.startTime else { return }
+            guard let self, let liveActivity else { return }
             do {
-                try await stopActivityUseCase.execute(distance: distance, duration: duration, startTime: startTime)
-                self.startTime = nil
+                try await stopActivityUseCase.execute(distance: liveActivity.distance, duration: liveActivity.duration, startTime: liveActivity.startTime)
             } catch {
                 print("Error: \(error.localizedDescription)")
             }
         }
-    }
-    
-    func formatTime(_ interval: TimeInterval) -> String {
-        let hours = Int(interval) / Int(TimeInterval.oneHour)
-        let minutes = (Int(interval) % Int(TimeInterval.oneHour)) / Int(TimeInterval.oneMinute)
-        let seconds = Int(interval) % Int(TimeInterval.oneMinute)
-        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-    }
-    
-    func formatCalories(_ calories: Double) -> String {
-        String(format: "%.0f kcal", calories)
     }
 }

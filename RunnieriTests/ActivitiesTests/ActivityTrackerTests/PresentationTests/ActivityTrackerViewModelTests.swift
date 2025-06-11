@@ -39,9 +39,8 @@ final class ActivityTrackerViewModelTests {
     @Test("Initial state should be correct")
     func testInitialState() {
         #expect(!sut.isTracking)
-        #expect(sut.duration == 0.0)
+        #expect(sut.liveActivity == nil)
         #expect(!sut.showPermissionAlert)
-        #expect(sut.distance == 0)
     }
     
     // MARK: - Start Tracking Tests
@@ -131,7 +130,7 @@ final class ActivityTrackerViewModelTests {
         await performAsync { simulateAdvancingTime(by: passedTime) }
         
         // Then
-        #expect(self.sut.duration == passedTime)
+        #expect(self.sut.liveActivity?.duration == passedTime)
     }
     
     @Test("Duration is preserved after tracking stops")
@@ -146,7 +145,7 @@ final class ActivityTrackerViewModelTests {
         await performAsync { sut.stopTracking() }
         
         // Then
-        #expect(sut.duration == TimeInterval.oneSecond * 2)
+        #expect(sut.liveActivity?.duration == TimeInterval.oneSecond * 2)
     }
     
     @Test("Duration is not updated after stopping")
@@ -156,14 +155,14 @@ final class ActivityTrackerViewModelTests {
         await performAsync { sut.startTracking() }
         await performAsync { simulateAdvancingTime(by: .oneSecond) }
         
-        let durationBeforeStop = sut.duration
+        let durationBeforeStop = sut.liveActivity?.duration
         await performAsync { sut.stopTracking() }
         
         // When
        simulateAdvancingTime(by: .oneSecond)
         
         // Then
-        #expect(sut.duration == durationBeforeStop)
+        #expect(sut.liveActivity?.duration == durationBeforeStop)
     }
     
     @Test("Duration is reset when tracking restarts")
@@ -180,7 +179,7 @@ final class ActivityTrackerViewModelTests {
         
         
         // Then
-        #expect(sut.duration == 0.0)
+        #expect(sut.liveActivity?.duration == 0.0)
     }
     
     // MARK: - Stop Tracking Tests
@@ -221,28 +220,57 @@ final class ActivityTrackerViewModelTests {
     }
     
     // MARK: - Location Updates Tests
-    @Test("Location updates should update distance")
-    func testLocationUpdatesUpdatesDistance() async {
+    @Test("Location updates distance if activity is started")
+    func testLocationUpdatesDistanceIfActivityIsStarted() async {
         // Given
         let expectedDistance = 500
+        locationService.authorizationStatus = .authorizedAlways
         
         // When
+        await performAsync { sut.startTracking() }
         locationService.distance = expectedDistance
         
         // Then
-        #expect(sut.distance == expectedDistance)
+        #expect(sut.liveActivity?.distance == expectedDistance)
     }
     
-    @Test("Calories updates should update calories")
-    func testCaloriesUpdatesUpdatesCalories() async {
+    @Test("Location does not update distance if activity is not started")
+    func testLocationDoesNotUpdateDistanceIfActivityIsNotStarted() async {
         // Given
-        let expectedCalories = 150.0
+        locationService.authorizationStatus = .authorizedAlways
         
         // When
-        activitiesRepository.calories = expectedCalories
+        locationService.distance = 500
         
         // Then
-        #expect(sut.calories == expectedCalories)
+        #expect(sut.liveActivity?.distance == nil)
+    }
+    
+    // MARK: Calories Updates Tests
+    @Test("Calories updates calories if activity is started")
+    func testCaloriesUpdatesCaloriesIfActivityIsStarted() async {
+        // Given
+        let expectedCalories = 150
+        locationService.authorizationStatus = .authorizedAlways
+        
+        // When
+        await performAsync { sut.startTracking() }
+        activitiesRepository.calories = Double(expectedCalories)
+        
+        // Then
+        #expect(sut.liveActivity?.calories == expectedCalories)
+    }
+    
+    @Test("Calories does not update calories if activity is not started")
+    func testCaloriesDoesNotUpdateCaloriesIfActivityIsNotStarted() async {
+        // Given
+        locationService.authorizationStatus = .authorizedAlways
+        
+        // When
+        activitiesRepository.calories = 150
+        
+        // Then
+        #expect(sut.liveActivity?.calories == nil)
     }
     
     // MARK: - Authorization Status Tests
@@ -278,23 +306,6 @@ final class ActivityTrackerViewModelTests {
         // Then
         #expect(sut.isTracking)
         #expect(!sut.showPermissionAlert)
-    }
-    
-    // MARK: - Time Formatting Tests
-    
-    @Test(
-        "Time formatting should handle various durations correctly",
-        arguments: [
-            (duration: 0.0, expectedFormat: "00:00:00"),
-            (duration: TimeInterval.oneSecond, expectedFormat: "00:00:01"),
-            (duration: TimeInterval.oneMinute, expectedFormat: "00:01:00"),
-            (duration: TimeInterval.oneHour, expectedFormat: "01:00:00"),
-            (duration: TimeInterval.oneHour + TimeInterval.oneMinute + TimeInterval.oneSecond, expectedFormat: "01:01:01"),
-            (duration: TimeInterval.oneDay, expectedFormat: "24:00:00")
-        ]
-    )
-    func testTimeFormatting(duration: TimeInterval, expectedFormat: String) {
-        #expect(sut.formatTime(duration) == expectedFormat)
     }
 } 
 
