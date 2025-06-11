@@ -3,7 +3,6 @@ import Combine
 
 @MainActor
 class ActivityTrackerViewModel: ObservableObject {
-    @Published var isTracking = false
     @Published var liveActivity: LiveActivityUIModel?
     @Published var showPermissionAlert = false
     
@@ -45,6 +44,10 @@ class ActivityTrackerViewModel: ObservableObject {
         return ActivityMapper().uiModel(from: liveActivity)
     }
     
+    var isTracking: Bool {
+        liveActivity != nil
+    }
+    
     func onTapStartTracking() {
         taskProvider.run { [weak self] in
             guard let self else { return }
@@ -66,7 +69,6 @@ class ActivityTrackerViewModel: ObservableObject {
     
     func onTapStopTracking() {
         guard isTracking else { return }
-        isTracking = false
         cancelTimer()
         
         taskProvider.run { [weak self] in
@@ -115,7 +117,6 @@ class ActivityTrackerViewModel: ObservableObject {
             startTime: timeProvider.currentTime,
             calories: 0
         )
-        isTracking = true
         scheduleTimer()
     }
     
