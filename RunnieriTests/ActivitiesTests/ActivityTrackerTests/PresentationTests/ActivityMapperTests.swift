@@ -77,11 +77,9 @@ struct ActivityMapperTests {
     @Test(
         "Map should correctly format various dates",
         arguments: [
-            (date: Date(timeIntervalSince1970: 0), expectedDate: "Jan 1, 1970"),
-            (date: Date(timeIntervalSince1970: .oneDay), expectedDate: "Jan 2, 1970"),
-            (date: Date(timeIntervalSince1970: .oneYear), expectedDate: "Jan 1, 1971"),
-            (date: Date(timeIntervalSince1970: .thirtyYears), expectedDate: "Jan 1, 2000"),
-            (date: Date(timeIntervalSince1970: .fiftyOneYears), expectedDate: "Jan 1, 2021")
+            (date: TimeInterval.zero.absoluteDate, expectedDate: "Jan 1, 1970"),
+            (date: TimeInterval.oneDay.absoluteDate, expectedDate: "Jan 2, 1970"),
+            (date: (TimeInterval.oneDay * 31).absoluteDate, expectedDate: "Feb 1, 1970")
         ]
     )
     func testMapFormatsVariousDates(date: Date, expectedDate: String) {
@@ -150,7 +148,7 @@ struct ActivityMapperTests {
                     id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour + TimeInterval.oneMinute + TimeInterval.oneSecond,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedUIModel: ActivityUIModel(

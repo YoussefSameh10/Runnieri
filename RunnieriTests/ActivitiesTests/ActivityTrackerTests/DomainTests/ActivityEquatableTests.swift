@@ -11,14 +11,14 @@ struct ActivityEquatableTests {
                     id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedIsEqual: true,
@@ -29,14 +29,14 @@ struct ActivityEquatableTests {
                     id: UUID(),
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 activity2: Activity(
                     id: UUID(),
                     distanceInMeters: 1500,
                     durationInSeconds: TimeInterval.oneHour,
-                    date: Date(timeIntervalSince1970: 0),
+                    date: 0.absoluteDate,
                     caloriesBurned: 100
                 ),
                 expectedIsEqual: false,

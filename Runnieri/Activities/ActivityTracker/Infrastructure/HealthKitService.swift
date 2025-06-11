@@ -116,7 +116,7 @@ final class HealthKitService: HealthDataSource {
         healthStore.execute(query)
     }
     
-    func fetchActiveEnergyBurned(from startDate: Date, to endDate: Date) async throws -> Double {
+    func fetchActiveEnergyBurned(from startTime: TimeInterval, to endTime: TimeInterval) async throws -> Double {
         let authorized = try await requestAuthorization()
         guard authorized else {
             throw ActivityError.healthServiceNotAuthorized
@@ -126,7 +126,11 @@ final class HealthKitService: HealthDataSource {
             throw ActivityError.healthDataUnavailable
         }
         
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let predicate = HKQuery.predicateForSamples(
+            withStart: startTime.absoluteDate,
+            end: endTime.absoluteDate,
+            options: .strictStartDate
+        )
         
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKStatisticsQuery(
