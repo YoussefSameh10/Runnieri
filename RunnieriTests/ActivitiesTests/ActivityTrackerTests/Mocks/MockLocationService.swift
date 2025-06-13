@@ -4,10 +4,10 @@ import Combine
 
 final class MockLocationService: LocationService {
     enum Operation: String {
-        case reset = "reset"
-        case start = "start"
-        case stop = "stop"
-        case requestAuthorization = "requestAuthorization"
+        case reset
+        case start
+        case stop
+        case requestAuthorization
     }
     
     @Published var distance: Int = 0

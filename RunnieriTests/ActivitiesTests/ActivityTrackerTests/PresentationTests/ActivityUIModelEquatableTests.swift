@@ -51,4 +51,4 @@ struct ActivityUIModelEquatableTests {
         // Then
         #expect(actualIsEqual == expectedIsEqual, "Should return \(expectedIsEqual) for \(description)")
     }
-} 
+}

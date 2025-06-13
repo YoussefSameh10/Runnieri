@@ -7,4 +7,4 @@ final class MockStartActivityInteractor: StartActivityUseCase {
     func execute() {
         wasExecuted = true
     }
-} 
+}

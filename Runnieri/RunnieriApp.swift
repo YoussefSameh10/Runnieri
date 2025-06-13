@@ -25,8 +25,14 @@ struct RunnieriApp: App {
                             Label("Activities", systemImage: "list.bullet")
                         }
                     let locationService: LocationService = CoreLocationService()
-                    let startUseCase: StartActivityUseCase = StartActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
-                    let stopUseCase: StopActivityUseCase = StopActivityInteractor(activitiesRepository: activitiesRepo, locationService: locationService)
+                    let startUseCase = StartActivityInteractor(
+                        activitiesRepository: activitiesRepo,
+                        locationService: locationService
+                    )
+                    let stopUseCase = StopActivityInteractor(
+                        activitiesRepository: activitiesRepo,
+                        locationService: locationService
+                    )
                     let timeProvider: TimeProvider = RealTimeProvider()
                     ActivityTrackerView(viewModel: ActivityTrackerViewModel(
                         startActivityUseCase: startUseCase,

@@ -1,0 +1,33 @@
+disabled_rules:
+  - trailing_whitespace
+  - todo
+
+line_length:
+  warning: 150
+  error: 200
+
+function_body_length:
+  warning: 50
+  error: 100
+
+file_length:
+  warning: 300
+  error: 400
+
+type_body_length:
+  warning: 300
+  error: 400
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+included:
+  - Runnieri
+  - RunnieriTests
+  - RunnieriUITests
+
+excluded:
+  - Runnieri/Preview Content
+  - Runnieri/Resources
+

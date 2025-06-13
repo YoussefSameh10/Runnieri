@@ -32,4 +32,4 @@ struct ErrorView: View {
     ErrorView(message: "Something went wrong") {
         print("Relaunch tapped")
     }
-} 
+}

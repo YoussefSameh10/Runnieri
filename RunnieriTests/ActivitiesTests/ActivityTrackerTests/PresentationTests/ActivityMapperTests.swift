@@ -307,7 +307,12 @@ struct ActivityMapperTests {
             )
         ]
     )
-    func testMapFromUILiveModelHandlesEdgeCases(activity: LiveActivityUIModel, expectedDistance: String, expectedDuration: String, expectedCalories: String) {
+    func testMapFromUILiveModelHandlesEdgeCases(
+        activity: LiveActivityUIModel,
+        expectedDistance: String,
+        expectedDuration: String,
+        expectedCalories: String
+    ) {
         // When
         let actualUIModel = sut.uiModel(from: activity)
         
