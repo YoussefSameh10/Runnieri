@@ -145,7 +145,6 @@ final class ActivityTrackerViewModelTests {
         await performAsync { sut.onTapStopTracking() }
         await performAsync { sut.onTapStartTracking() }
         
-        
         // Then
         #expect(sut.liveActivity?.duration == 0.0)
     }

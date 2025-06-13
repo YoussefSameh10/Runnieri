@@ -101,6 +101,7 @@
 			buildConfigurationList = C68C93722DE48A7F00D57FE3 /* Build configuration list for PBXNativeTarget "Runnieri" */;
 			buildPhases = (
 				C68C934A2DE48A7D00D57FE3 /* Sources */,
+				C659ED3D2DFC870F00549906 /* ShellScript */,
 				C68C934B2DE48A7D00D57FE3 /* Frameworks */,
 				C68C934C2DE48A7D00D57FE3 /* Resources */,
 			);
@@ -198,6 +199,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C659ED3D2DFC870F00549906 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint > /dev/null; then\n  echo \"Running SwiftLint...\"\n  cd \"${SRCROOT}\"\n  swiftlint lint --reporter xcode\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi \n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C68C934A2DE48A7D00D57FE3 /* Sources */ = {
@@ -355,6 +377,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Runnieri/Preview Content\"";
 				DEVELOPMENT_TEAM = 74P9R4X97D;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Runnieri/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -386,6 +409,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Runnieri/Preview Content\"";
 				DEVELOPMENT_TEAM = 74P9R4X97D;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Runnieri/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

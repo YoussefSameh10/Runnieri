@@ -104,9 +104,16 @@ struct ActivityPropertiesComparisonTests {
             )
         ]
     )
-    func testActivityIsSameProperties(activity1: Activity, activity2: Activity, expectedAreSameProperties: Bool, description: String) {
+    func testActivityIsSameProperties(
+        activity1: Activity,
+        activity2: Activity,
+        expectedAreSameProperties: Bool,
+        description: String
+    ) {
         // When
+        let actualIsSameProperties = activity1.isSameProperties(as: activity2)
+        
         // Then
-        #expect(activity1.isSameProperties(as: activity2) == expectedAreSameProperties, "Should return \(expectedAreSameProperties) for \(description)")
+        #expect(actualIsSameProperties == expectedAreSameProperties, "Should return \(expectedAreSameProperties) for \(description)")
     }
 } 

@@ -55,7 +55,10 @@ final class HealthKitService: HealthDataSource {
         }
         
         // Create and execute the observer query
-        let query = HKObserverQuery(sampleType: activeEnergyType, predicate: nil) { [weak self] query, completionHandler, error in
+        let query = HKObserverQuery(
+            sampleType: activeEnergyType,
+            predicate: nil
+        ) { [weak self] _, completionHandler, error in
             if let error = error {
                 print("Error in observer query: \(error)")
                 completionHandler()

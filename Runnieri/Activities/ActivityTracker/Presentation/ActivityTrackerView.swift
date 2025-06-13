@@ -15,20 +15,23 @@ struct ActivityTrackerView: View {
                 Spacer()
             }
             
-            Button(action: {
-                if viewModel.isTracking {
-                    viewModel.onTapStopTracking()
-                } else {
-                    viewModel.onTapStartTracking()
+            Button(
+                action: {
+                    if viewModel.isTracking {
+                        viewModel.onTapStopTracking()
+                    } else {
+                        viewModel.onTapStartTracking()
+                    }
+                },
+                label: {
+                    Text(viewModel.isTracking ? "Stop" : "Start")
+                        .font(.title)
+                        .frame(width: 200, height: 60)
+                        .background(viewModel.isTracking ? Color.red : Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(16)
                 }
-            }) {
-                Text(viewModel.isTracking ? "Stop" : "Start")
-                    .font(.title)
-                    .frame(width: 200, height: 60)
-                    .background(viewModel.isTracking ? Color.red : Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(16)
-            }
+            )
             .padding(.bottom, 60)
         }
         .alert("Location Permission Denied", isPresented: $viewModel.showPermissionAlert) {

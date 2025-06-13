@@ -114,7 +114,11 @@ final class StopActivityInteractorTests {
         )
         
         // Then
-        #expect((!activitiesRepo.activities.isEmpty) == expectedIsActivityAdded, "Activity should \(expectedIsActivityAdded ? "be added" : "not be added") for \(description)")
+        let actualIsActivityAdded = !activitiesRepo.activities.isEmpty
+        #expect(
+            actualIsActivityAdded == expectedIsActivityAdded,
+            "Activity should \(expectedIsActivityAdded ? "be added" : "not be added") for \(description)"
+        )
     }
     
     @Test("Execute should throw error when repository fails")

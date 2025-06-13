@@ -121,4 +121,4 @@ struct ActivityUIModelPropertiesComparisonTests {
         // Then
         #expect(model1.isSameProperties(as: model2) == expectedAreSameProperties, "Should return \(expectedAreSameProperties) for \(description)")
     }
-} 
+}
