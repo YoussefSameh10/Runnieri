@@ -1,0 +1,32 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Select Xcode
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_16.2.0.app
+        xcodebuild -version
+        
+    - name: Install Dependencies
+      run: |
+        brew install swiftlint
+        
+    - name: Build
+      run: |
+        xcodebuild clean build -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' | xcpretty
+        
+    - name: Run Tests
+      run: |
+        xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' | xcpretty
