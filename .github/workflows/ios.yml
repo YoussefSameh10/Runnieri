@@ -69,7 +69,7 @@ jobs:
     - name: Run SwiftLint
       run: |
         brew install swiftlint
-        swiftlint lint --config Runnieri/build-support/.swiftlint.yml --reporter github-actions-logging
+        swiftlint lint --config Runnieri/.swiftlint.yml --reporter github-actions-logging
         
     - name: Check Code Coverage
       run: |
