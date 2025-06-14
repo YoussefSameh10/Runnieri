@@ -26,7 +26,11 @@ actor SwiftDataWrapper: DataSource {
         try context.save()
     }
     
-    func fetch<Model: DataModel>(_: Model.Type, predicate: Predicate<Model>?, sortBy: [SortDescriptor<Model>]) async throws -> [Model] {
+    func fetch<Model: DataModel>(
+        _: Model.Type,
+        predicate: Predicate<Model>?,
+        sortBy: [SortDescriptor<Model>]
+    ) async throws -> [Model] {
         let descriptor = FetchDescriptor<Model>(predicate: predicate, sortBy: sortBy)
         return try context.fetch(descriptor)
     }
