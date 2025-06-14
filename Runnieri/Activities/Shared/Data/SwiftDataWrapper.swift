@@ -1,16 +1,15 @@
 import Foundation
 import SwiftData
 
+@ModelActor
 actor SwiftDataWrapper: DataSource {
-    private let modelContainer: ModelContainer
-    private let context: ModelContext
     private let schema = Schema([ActivityDataModel.self])
     private static var shared: DataSource?
     
     private init() throws {
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         modelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
-        context = ModelContext(modelContainer)
+        self.modelExecutor = DefaultSerialModelExecutor(modelContext: ModelContext(modelContainer))
     }
     
     static func getInstance() -> DataSource {
@@ -22,8 +21,8 @@ actor SwiftDataWrapper: DataSource {
     }
     
     func save<Model: DataModel>(_ item: Model) async throws {
-        context.insert(item)
-        try context.save()
+        modelContext.insert(item)
+        try modelContext.save()
     }
     
     func fetch<Model: DataModel>(
@@ -32,15 +31,15 @@ actor SwiftDataWrapper: DataSource {
         sortBy: [SortDescriptor<Model>]
     ) async throws -> [Model] {
         let descriptor = FetchDescriptor<Model>(predicate: predicate, sortBy: sortBy)
-        return try context.fetch(descriptor)
+        return try modelContext.fetch(descriptor)
     }
     
     func delete<Model: DataModel>(_ item: Model) async throws {
-        context.delete(item)
-        try context.save()
+        modelContext.delete(item)
+        try modelContext.save()
     }
     
     func update<Model: DataModel>(_ item: Model) async throws {
-        try context.save()
+        try modelContext.save()
     }
 }

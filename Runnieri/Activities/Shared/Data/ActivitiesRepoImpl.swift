@@ -3,7 +3,6 @@ import SwiftData
 import Combine
 import HealthKit
 
-@DataAccessActor
 final class ActivitiesRepoImpl: ActivitiesRepository {
     nonisolated private let _activitiesPublisher = CurrentValueSubject<[Activity], Never>([])
     nonisolated var activitiesPublisher: AnyPublisher<[Activity], Never> {
