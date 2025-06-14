@@ -15,8 +15,10 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Select Xcode
-      run: sudo xcode-select -switch /Applications/Xcode.app
-      
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_16.0.app
+        xcodebuild -version
+        
     - name: Install Dependencies
       run: |
         brew install swiftlint
@@ -31,7 +33,7 @@ jobs:
         
     - name: Run SwiftLint
       run: |
-        swiftlint lint --config Runnieri/build-support/.swiftlint.yml --reporter github-actions-logging
+        swiftlint lint --config Runnieri/.swiftlint.yml --reporter github-actions-logging
         
     - name: Generate Documentation
       run: |
@@ -59,6 +61,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Select Xcode
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_16.0.app
+        xcodebuild -version
+    
     - name: Run SwiftLint
       run: |
         brew install swiftlint
@@ -83,6 +90,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Select Xcode
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_16.0.app
+        xcodebuild -version
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
