@@ -25,15 +25,15 @@ jobs:
         
     - name: Build
       run: |
-        xcodebuild clean build -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' | xcpretty
+        xcodebuild clean build -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' | xcpretty
         
     - name: Run Tests
       run: |
-        xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' | xcpretty
+        xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' | xcpretty
         
     - name: Run SwiftLint
       run: |
-        swiftlint lint --config Runnieri/.swiftlint.yml --reporter github-actions-logging
+        swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
         
     - name: Generate Documentation
       run: |
@@ -69,11 +69,11 @@ jobs:
     - name: Run SwiftLint
       run: |
         brew install swiftlint
-        swiftlint lint --config Runnieri/.swiftlint.yml --reporter github-actions-logging
+        swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
         
     - name: Check Code Coverage
       run: |
-        xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' -enableCodeCoverage YES | xcpretty
+        xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' -enableCodeCoverage YES | xcpretty
         
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4
