@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C6CB44D52DFD94FA00916A7D /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = C6CB44D42DFD94FA00916A7D /* Lottie */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C68C935F2DE48A7F00D57FE3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -15,6 +19,19 @@
 			remoteInfo = Runnieri;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C6CB44D92DFD957500916A7D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C636DAED2DE4C4DC000B2829 /* Runnieri.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Runnieri.xctestplan; sourceTree = "<group>"; };
@@ -53,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6CB44D52DFD94FA00916A7D /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +122,7 @@
 				C659ED3D2DFC870F00549906 /* ShellScript */,
 				C68C934B2DE48A7D00D57FE3 /* Frameworks */,
 				C68C934C2DE48A7D00D57FE3 /* Resources */,
+				C6CB44D92DFD957500916A7D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -114,6 +133,7 @@
 			);
 			name = Runnieri;
 			packageProductDependencies = (
+				C6CB44D42DFD94FA00916A7D /* Lottie */,
 			);
 			productName = Runnieri;
 			productReference = C68C934E2DE48A7D00D57FE3 /* Runnieri.app */;
@@ -171,6 +191,7 @@
 			mainGroup = C68C93452DE48A7D00D57FE3;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				C6CB44C52DFD93F300916A7D /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C68C934F2DE48A7D00D57FE3 /* Products */;
@@ -501,6 +522,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C6CB44C52DFD93F300916A7D /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C6CB44D42DFD94FA00916A7D /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6CB44C52DFD93F300916A7D /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C68C93462DE48A7D00D57FE3 /* Project object */;
 }

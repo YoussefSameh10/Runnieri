@@ -1,16 +1,12 @@
 import SwiftUI
 
 struct OnboardingPageView: View {
-    let page: OnboardingPage
+    let page: OnboardingUIModel
     
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: page.imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 150, height: 150)
-                .foregroundStyle(.tint)
-                .symbolEffect(.bounce, options: .repeating)
+            AnimationView(name: page.imageName)
+                .frame(width: 200, height: 200)
             
             Text(page.title)
                 .font(.title)
@@ -27,7 +23,6 @@ struct OnboardingPageView: View {
                 Image(systemName: "arrow.right.circle.fill")
                     .font(.title)
                     .foregroundStyle(.tint)
-                    .symbolEffect(.bounce)
             }
         }
         .padding()
