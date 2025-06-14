@@ -9,7 +9,8 @@ final class OnboardingRepositoryImpl: OnboardingRepository {
     }
     
     var isOnboardingCompleted: Bool {
-        userDefaults.bool(forKey: onboardingCompletedKey)
+        userDefaults.set(false, forKey: onboardingCompletedKey)
+        return userDefaults.bool(forKey: onboardingCompletedKey)
     }
     
     func completeOnboarding() async throws {

@@ -12,28 +12,28 @@ final class OnboardingViewModel: ObservableObject {
     private let healthDataSource: HealthDataSource
     private var cancellables = Set<AnyCancellable>()
     
-    let pages: [OnboardingPage] = [
-        OnboardingPage(
+    let pages: [OnboardingUIModel] = [
+        OnboardingUIModel(
             title: "Welcome to Runnieri",
             description: "Track your walking activities and monitor your progress with ease.",
-            imageName: "figure.walk"
+            imageName: "running"
         ),
-        OnboardingPage(
+        OnboardingUIModel(
             title: "Location Access",
             description: "We need your location to track your walking distance accurately.",
-            imageName: "location.fill",
+            imageName: "location",
             permissionType: .location
         ),
-        OnboardingPage(
+        OnboardingUIModel(
             title: "Health Data",
             description: "Access to your health data helps us calculate calories burned during your activities.",
-            imageName: "heart.fill",
+            imageName: "health",
             permissionType: .healthKit
         ),
-        OnboardingPage(
+        OnboardingUIModel(
             title: "You're All Set!",
             description: "Start tracking your walking activities and achieve your fitness goals.",
-            imageName: "checkmark.circle.fill"
+            imageName: "checkmark"
         )
     ]
     
