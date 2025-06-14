@@ -92,4 +92,19 @@ jobs:
           Documentation/**/*
         generate_release_notes: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Add a status check job that will fail if any of the required jobs fail
+  status-check:
+    name: Status Check
+    needs: [build-and-test, code-quality]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Check Job Status
+      run: |
+        if [[ "${{ needs.build-and-test.result }}" != "success" ]] || [[ "${{ needs.code-quality.result }}" != "success" ]]; then
+          echo "Required jobs failed. Cannot merge."
+          exit 1
+        fi 
