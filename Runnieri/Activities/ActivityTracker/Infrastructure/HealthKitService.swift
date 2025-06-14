@@ -13,7 +13,7 @@ final class HealthKitService: HealthDataSource {
         _caloriesPublisher.eraseToAnyPublisher()
     }
     
-    private func requestAuthorization() async throws -> Bool {
+    func requestAuthorization() async throws -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else {
             throw ActivityError.healthServiceNotAvailable
         }
