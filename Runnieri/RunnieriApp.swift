@@ -13,7 +13,7 @@ struct RunnieriApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationContainer(router: router) { router in
+            MainRouterView(router: router) { router in
                 router.currentRoute.view(router: router)
             }
         }

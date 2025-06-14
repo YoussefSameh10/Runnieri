@@ -23,14 +23,12 @@ final class MainRouter: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        // Initialize dependencies
         self.onboardingRepository = OnboardingRepositoryImpl()
         self.activitiesRepository = ActivitiesRepoImpl()
         self.locationService = CoreLocationService()
         self.healthDataSource = HealthKitService()
         self.timeProvider = RealTimeProvider()
         
-        // Set initial route based on onboarding status
         self.currentRoute = onboardingRepository.isOnboardingCompleted ? .main : .onboarding
         self.navigationStack = [currentRoute]
     }

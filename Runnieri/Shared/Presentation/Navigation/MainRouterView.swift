@@ -1,17 +1,9 @@
 import SwiftUI
 
-/// A container view that manages navigation using the MainRouter
-struct NavigationContainer<Content: View>: View {
-    /// The router instance
+struct MainRouterView<Content: View>: View {
     @StateObject private var router: MainRouter
-    
-    /// The content view builder
     let content: (MainRouter) -> Content
     
-    /// Initializes the navigation container
-    /// - Parameters:
-    ///   - router: The router instance to use
-    ///   - content: The content view builder
     init(
         router: MainRouter,
         @ViewBuilder content: @escaping (MainRouter) -> Content
