@@ -20,7 +20,6 @@ jobs:
     - name: Install Dependencies
       run: |
         brew install swiftlint
-        brew install swift-doc
         
     - name: Build
       run: |
