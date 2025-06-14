@@ -39,7 +39,7 @@ jobs:
         swift-doc generate ./Runnieri --output ./Documentation
         
     - name: Upload Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
@@ -47,7 +47,7 @@ jobs:
           ~/Library/Developer/Xcode/DerivedData/**/Logs/Test
           
     - name: Upload Documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation
         path: ./Documentation
@@ -70,7 +70,7 @@ jobs:
         xcodebuild test -scheme Runnieri -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' -enableCodeCoverage YES | xcpretty
         
     - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: |
