@@ -18,10 +18,7 @@ struct OnboardingView: View {
             VStack(spacing: 20) {
                 if viewModel.isLastPage {
                     Button("Get Started") {
-                        Task {
-                            await viewModel.completeOnboarding()
-                            dismiss()
-                        }
+                        viewModel.completeOnboarding()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
@@ -38,7 +35,7 @@ struct OnboardingView: View {
                         
                         Button("Next") {
                             Task {
-                                await viewModel.requestPermission()
+                                await viewModel.requestPermissions()
                                 viewModel.nextPage()
                             }
                         }
