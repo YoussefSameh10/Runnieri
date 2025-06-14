@@ -349,6 +349,6 @@ struct ActivityMapperTests {
         let actualDomainModel = sut.domainModel(from: liveActivity)
         
         // Then
-        #expect(actualDomainModel != expectedDomainModel)
+        #expect(actualDomainModel == expectedDomainModel)
     }
 }

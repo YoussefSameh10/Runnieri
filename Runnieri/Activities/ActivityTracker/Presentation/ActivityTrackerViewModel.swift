@@ -106,6 +106,121 @@ class ActivityTrackerViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
+        locationService.distancePublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newDistance in
+                self?.updateDistance(newDistance)
+            }
+            .store(in: &cancellables)
+        
+        activitiesRepository.caloriesPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] newCalories in
+                self?.updateCalories(Int(newCalories))
+            }
+            .store(in: &cancellables)
+            
+        locationService.authorizationStatusPublisher
+            .receive(on: scheduler)
+            .sink { [weak self] status in
+                if status == .denied || status == .restricted {
+                    self?.showPermissionAlert = true
+                    self?.onTapStopTracking()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func startTracking() async throws {
