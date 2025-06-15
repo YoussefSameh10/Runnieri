@@ -38,10 +38,14 @@ final class MainRouter: ObservableObject {
             onboardingRepository: onboardingRepository
         )
         
-        let viewModel = OnboardingViewModel(
-            completeOnboardingUseCase: completeOnboardingUseCase,
+        let permissionUseCase = RequestPermissionInteractor(
             locationService: locationService,
             healthDataSource: healthDataSource
+        )
+        
+        let viewModel = OnboardingViewModel(
+            completeOnboardingUseCase: completeOnboardingUseCase,
+            requestPermissionUseCase: permissionUseCase
         )
         
         viewModel.$isOnboardingCompleted

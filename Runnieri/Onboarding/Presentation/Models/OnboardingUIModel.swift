@@ -21,8 +21,3 @@ struct OnboardingUIModel: Identifiable {
         self.permissionType = permissionType
     }
 }
-
-enum PermissionType {
-    case location
-    case healthKit
-} 

@@ -11,6 +11,7 @@ import Foundation
 protocol HealthDataSource {
     var caloriesPublisher: AnyPublisher<Double, Never> { get }
     
+    @discardableResult
     func requestAuthorization() async throws -> Bool
     func startLiveCalorieTracking() async throws
     func stopLiveCalorieTracking() async throws
