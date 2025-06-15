@@ -3,26 +3,21 @@ import Combine
 
 @MainActor
 final class OnboardingViewModel: ObservableObject {
-    // MARK: - Properties
     @Published var currentPage = 0
     @Published private(set) var pages: [OnboardingUIModel]
-    @Published var showPermissionAlert = false
+    @Published var isPermissionAlertDisplayed = false
     @Published var permissionAlertMessage = ""
     @Published private(set) var isOnboardingCompleted = false
     
     private let completeOnboardingUseCase: CompleteOnboardingUseCase
-    private let locationService: LocationService
-    private let healthDataSource: HealthDataSource
+    private let requestPermissionUseCase: RequestPermissionUseCase
     
-    // MARK: - Initialization
     init(
         completeOnboardingUseCase: CompleteOnboardingUseCase,
-        locationService: LocationService,
-        healthDataSource: HealthDataSource
+        requestPermissionUseCase: RequestPermissionUseCase
     ) {
         self.completeOnboardingUseCase = completeOnboardingUseCase
-        self.locationService = locationService
-        self.healthDataSource = healthDataSource
+        self.requestPermissionUseCase = requestPermissionUseCase
         
         self.pages = [
             OnboardingUIModel(
@@ -50,8 +45,6 @@ final class OnboardingViewModel: ObservableObject {
         ]
     }
     
-    // MARK: - Public Methods
-    
     var isLastPage: Bool {
         currentPage == pages.count - 1
     }
@@ -72,15 +65,11 @@ final class OnboardingViewModel: ObservableObject {
     
     func requestPermissions() async {
         do {
-            if pages[currentPage].permissionType == .location {
-                locationService.requestAuthorization()
-            } else if pages[currentPage].permissionType == .healthKit {
-                _ = try await healthDataSource.requestAuthorization()
+            if let permissionType = pages[currentPage].permissionType {
+                try await requestPermissionUseCase.execute(for: permissionType)
             }
         } catch {
-            showPermissionAlert = true
-            permissionAlertMessage = "Please enable Health access in Settings to track your calories."
-
+            showPermissionAlert()
         }
     }
     
@@ -94,4 +83,9 @@ final class OnboardingViewModel: ObservableObject {
             }
         }
     }
-} 
+    
+    private func showPermissionAlert() {
+        isPermissionAlertDisplayed = true
+        permissionAlertMessage = "Please enable Health access in Settings to track your calories."
+    }
+}

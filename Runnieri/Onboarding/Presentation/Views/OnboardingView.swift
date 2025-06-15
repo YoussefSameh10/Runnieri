@@ -45,7 +45,7 @@ struct OnboardingView: View {
             }
             .padding()
         }
-        .alert("Permission Required", isPresented: $viewModel.showPermissionAlert) {
+        .alert("Permission Required", isPresented: $viewModel.isPermissionAlertDisplayed) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.permissionAlertMessage)
