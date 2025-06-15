@@ -11,13 +11,16 @@ final class OnboardingViewModel: ObservableObject {
     
     private let completeOnboardingUseCase: CompleteOnboardingUseCase
     private let requestPermissionUseCase: RequestPermissionUseCase
+    private nonisolated let taskProvider: TaskProvider
     
     init(
         completeOnboardingUseCase: CompleteOnboardingUseCase,
-        requestPermissionUseCase: RequestPermissionUseCase
+        requestPermissionUseCase: RequestPermissionUseCase,
+        taskProvider: TaskProvider = RealTaskProvider()
     ) {
         self.completeOnboardingUseCase = completeOnboardingUseCase
         self.requestPermissionUseCase = requestPermissionUseCase
+        self.taskProvider = taskProvider
         
         self.pages = [
             OnboardingUIModel(
@@ -49,32 +52,39 @@ final class OnboardingViewModel: ObservableObject {
         currentPage == pages.count - 1
     }
     
-    func nextPage() {
-        if currentPage < pages.count - 1 {
-            currentPage += 1
-        } else {
-            completeOnboarding()
+    func onTapNext() {
+        taskProvider.run { [weak self] in
+            guard let self else { return }
+            do {
+                try await requestPermissions()
+                nextPage()
+            } catch {
+                showPermissionAlert()
+            }
         }
     }
     
-    func previousPage() {
+    func onTapPrevious() {
         if currentPage > 0 {
             currentPage -= 1
         }
     }
     
-    func requestPermissions() async {
-        do {
-            if let permissionType = pages[currentPage].permissionType {
-                try await requestPermissionUseCase.execute(for: permissionType)
-            }
-        } catch {
-            showPermissionAlert()
+    private func nextPage() {
+        if currentPage < pages.count - 1 {
+            currentPage += 1
+        }
+    }
+    
+    private func requestPermissions() async throws {
+        if let permissionType = pages[currentPage].permissionType {
+            try await requestPermissionUseCase.execute(for: permissionType)
         }
     }
     
     func completeOnboarding() {
-        Task {
+        taskProvider.run { [weak self] in
+            guard let self else { return }
             do {
                 try await completeOnboardingUseCase.execute()
                 isOnboardingCompleted = true

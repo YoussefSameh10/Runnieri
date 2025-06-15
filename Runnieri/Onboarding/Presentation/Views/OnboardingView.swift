@@ -26,7 +26,7 @@ struct OnboardingView: View {
                     HStack {
                         if viewModel.currentPage > 0 {
                             Button("Back") {
-                                viewModel.previousPage()
+                                viewModel.onTapPrevious()
                             }
                             .buttonStyle(.bordered)
                         }
@@ -34,10 +34,7 @@ struct OnboardingView: View {
                         Spacer()
                         
                         Button("Next") {
-                            Task {
-                                await viewModel.requestPermissions()
-                                viewModel.nextPage()
-                            }
+                            viewModel.onTapNext()
                         }
                         .buttonStyle(.borderedProminent)
                     }
