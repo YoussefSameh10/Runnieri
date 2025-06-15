@@ -22,12 +22,3 @@ final class RequestPermissionInteractor: RequestPermissionUseCase {
         }
     }
 }
-
-extension LocationAuthState {
-    var isAuthorized: Bool {
-        switch self {
-        case .authorizedWhenInUse, .authorizedAlways: true
-        case .notDetermined, .restricted, .denied: false
-        }
-    }
-}
