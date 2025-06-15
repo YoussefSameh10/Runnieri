@@ -14,6 +14,9 @@ struct OnboardingView: View {
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .always))
         .animation(.easeInOut, value: viewModel.currentPage)
+        .onChange(of: viewModel.currentPage) { _, newValue in
+            viewModel.onPageChange(to: newValue)
+        }
         .overlay(alignment: .bottom) {
             VStack(spacing: 20) {
                 if viewModel.isLastPage {

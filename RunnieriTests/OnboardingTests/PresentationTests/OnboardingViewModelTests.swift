@@ -60,53 +60,15 @@ struct OnboardingViewModelTests {
             (initialPage: 3, expectedPage: 3)
         ]
     )
-    func testOnTapNextIncrementsCurrentPage(initialPage: Int, expectedPage: Int) async {
+    func testOnTapNextIncrementsCurrentPage(initialPage: Int, expectedPage: Int) {
         // Given
         sut.currentPage = initialPage
         
         // When
-        await performAsync { sut.onTapNext() }
+        sut.onTapNext()
         
         // Then
         #expect(sut.currentPage == expectedPage)
-    }
-    
-    @Test(
-        "onTapNext should request permissions when current page has permission type",
-        arguments: [
-            (page: 1, permission: PermissionType.location),
-            (page: 2, permission: PermissionType.healthKit)
-        ]
-    )
-    func testOnTapNextRequestsPermissions(page: Int, permission: PermissionType) async {
-        // Given
-        sut.currentPage = page
-        
-        // When
-        await performAsync { sut.onTapNext() }
-        
-        // Then
-        #expect(requestPermissionUseCase.lastRequestedPermission == permission)
-    }
-    
-    @Test(
-        "onTapNext should show alert when permission request fails",
-        arguments: [
-            (page: 1, permission: PermissionType.location),
-            (page: 2, permission: PermissionType.healthKit)
-        ]
-    )
-    func testOnTapNextShowsAlertOnPermissionError(page: Int, permission: PermissionType) async {
-        // Given
-        sut.currentPage = page
-        requestPermissionUseCase.shouldThrowError = true
-        
-        // When
-        await performAsync { sut.onTapNext() }
-        
-        // Then
-        #expect(sut.isPermissionAlertDisplayed)
-        #expect(!sut.permissionAlertMessage.isEmpty)
     }
     
     @Test(
@@ -127,6 +89,63 @@ struct OnboardingViewModelTests {
         
         // Then
         #expect(sut.currentPage == expectedPage)
+    }
+    
+    // MARK: - Page Change Tests
+    @Test(
+        "onPageChange should request permissions when previous page requires them",
+        arguments: [
+            (fromPage: 1, toPage: 2, expectedPermission: PermissionType.location),
+            (fromPage: 2, toPage: 3, expectedPermission: PermissionType.healthKit)
+        ]
+    )
+    func testOnPageChangeRequestsPermissions(fromPage: Int, toPage: Int, expectedPermission: PermissionType) async {
+        // Given
+        sut.currentPage = fromPage
+        
+        // When
+        await performAsync { sut.onPageChange(to: toPage) }
+        
+        // Then
+        #expect(requestPermissionUseCase.lastRequestedPermission == expectedPermission)
+    }
+    
+    @Test(
+        "onPageChange should show alert when permission request fails",
+        arguments: [
+            (fromPage: 1, toPage: 2),
+            (fromPage: 2, toPage: 3)
+        ]
+    )
+    func testOnPageChangeShowsAlertOnPermissionError(fromPage: Int, toPage: Int) async {
+        // Given
+        sut.currentPage = fromPage
+        requestPermissionUseCase.shouldThrowError = true
+        
+        // When
+        await performAsync { sut.onPageChange(to: toPage) }
+        
+        // Then
+        #expect(sut.isPermissionAlertDisplayed)
+        #expect(!sut.permissionAlertMessage.isEmpty)
+    }
+    
+    @Test(
+        "onPageChange should not request permissions when previous page doesn't require them",
+        arguments: [
+            (fromPage: 3, toPage: 4)
+        ]
+    )
+    func testOnPageChangeDoesNotRequestPermissionsWhenNotRequired(fromPage: Int, toPage: Int) async {
+        // Given
+        sut.currentPage = fromPage
+        
+        // When
+        await performAsync { sut.onPageChange(to: toPage) }
+        
+        // Then
+        #expect(requestPermissionUseCase.lastRequestedPermission == nil)
+        #expect(!sut.isPermissionAlertDisplayed)
     }
     
     // MARK: - Completion Tests

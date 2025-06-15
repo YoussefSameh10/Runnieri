@@ -1,6 +1,6 @@
 import Foundation
 
-struct OnboardingUIModel: Identifiable {
+struct OnboardingPageUIModel: Identifiable {
     let id: UUID
     let title: String
     let description: String
