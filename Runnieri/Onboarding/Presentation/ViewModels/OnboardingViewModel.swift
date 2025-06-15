@@ -4,7 +4,7 @@ import Combine
 @MainActor
 final class OnboardingViewModel: ObservableObject {
     @Published var currentPage = 0
-    @Published private(set) var pages: [OnboardingUIModel]
+    @Published private(set) var pages: [OnboardingPageUIModel]
     @Published var isPermissionAlertDisplayed = false
     @Published var permissionAlertMessage = ""
     @Published private(set) var isOnboardingCompleted = false
@@ -23,24 +23,24 @@ final class OnboardingViewModel: ObservableObject {
         self.taskProvider = taskProvider
         
         self.pages = [
-            OnboardingUIModel(
+            OnboardingPageUIModel(
                 title: "Welcome to Runnieri",
                 description: "Your personal running companion. Track your runs, monitor your progress, and achieve your fitness goals.",
                 imageName: "running"
             ),
-            OnboardingUIModel(
+            OnboardingPageUIModel(
                 title: "Location Access",
                 description: "We need your location to track your runs accurately. Your data is always private and secure.",
                 imageName: "location",
                 permissionType: .location
             ),
-            OnboardingUIModel(
+            OnboardingPageUIModel(
                 title: "Health Integration",
                 description: "Connect with Apple Health to track your fitness metrics and contribute to your health data.",
                 imageName: "health",
                 permissionType: .healthKit
             ),
-            OnboardingUIModel(
+            OnboardingPageUIModel(
                 title: "You're All Set!",
                 description: "Start your running journey with Runnieri. Let's hit the road!",
                 imageName: "checkmark"
@@ -53,14 +53,8 @@ final class OnboardingViewModel: ObservableObject {
     }
     
     func onTapNext() {
-        taskProvider.run { [weak self] in
-            guard let self else { return }
-            do {
-                try await requestPermissions()
-                nextPage()
-            } catch {
-                showPermissionAlert()
-            }
+        if currentPage < pages.count - 1 {
+            currentPage += 1
         }
     }
     
@@ -70,15 +64,17 @@ final class OnboardingViewModel: ObservableObject {
         }
     }
     
-    private func nextPage() {
-        if currentPage < pages.count - 1 {
-            currentPage += 1
-        }
-    }
-    
-    private func requestPermissions() async throws {
-        if let permissionType = pages[currentPage].permissionType {
-            try await requestPermissionUseCase.execute(for: permissionType)
+    func onPageChange(to newPage: Int) {
+        taskProvider.run { [weak self] in
+            guard let self else { return }
+            do {
+                let previousPage = newPage - 1
+                if let permissionType = pages[previousPage].permissionType {
+                    try await requestPermissionUseCase.execute(for: permissionType)
+                }
+            } catch {
+                showPermissionAlert()
+            }
         }
     }
     
